@@ -1,0 +1,7 @@
+{
+  "name": "codingcraft",
+  "version": "0.0.1",
+  "dependencies": {
+    "voxel-hello-world": "0.6.0"
+  }
+}
