@@ -2,9 +2,35 @@
 {% autoescape true %}
 <html>
   <head>
+    <title>Codingcraft</title>
+    <meta charset="utf-8">
+    <style type="text/css">
+      body {
+        background-color: #f0f0f0;
+        margin: 0px;
+        overflow: hidden;
+      }
+      #container {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      #crosshair {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        margin: -16px 0 0 -16px;
+        width: 32px;
+        height: 32px;
+      }
+      #stats { bottom: 0px; right: 0px; }
+    </style>
   </head>
   <body>
-    <script src="js/built_craft.js"></script>
+    <div id="container"></div>
+    <div id="crosshair"><img src="images/crosshair.png"/></div>
+
+    <script src="js/bundle.js"></script>
   </body>
 </html>
 {% endautoescape %}
