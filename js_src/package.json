@@ -2,6 +2,13 @@
   "name": "codingcraft",
   "version": "0.0.1",
   "dependencies": {
-    "voxel-hello-world": "0.6.0"
+    "painterly-textures": "",
+    "voxel": "0.3.1",
+    "voxel-engine": "~0.18.0",
+    "voxel-highlight": "0.0.9",
+    "voxel-player": "0.1.0",
+    "voxel-fly": "~0.1.0",
+    "voxel-walk": "git://github.com/flyswatter/voxel-walk.git",
+    "extend": "1.1.3"
   }
 }

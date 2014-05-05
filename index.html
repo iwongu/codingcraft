@@ -1,6 +1,6 @@
 <!doctype html>
 {% autoescape true %}
-<html>
+<html ng-app="cc">
   <head>
     <title>Codingcraft</title>
     <meta charset="utf-8">
@@ -27,12 +27,12 @@
       }
       #stats { bottom: 0px; right: 0px; }
     </style>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
   </head>
-  <body>
+  <body ng-controller="GameController as game">
     <div id="container"></div>
     <div id="crosshair"><img src="images/crosshair.png"/></div>
 
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
     <script src="js/bundle.js"></script>
   </body>
 </html>
