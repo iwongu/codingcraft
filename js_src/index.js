@@ -32,8 +32,15 @@ var GameController = function($scope) {
       'whitewool'];
 
   var opts = {
-    generate: voxel.generator['Valley'],
+    generate: function(i,j,k) {
+      if (j > 0) { return 0; }
+      if ((i*i + j*j + k*k) < 15*15) {
+        return j == 0 ? 1 : 3;
+      }
+      return 0;
+    },
     chunkDistance: 2,
+    container: containerEl,
     materials: this.materials,
     worldOrigin: [0, 0, 0],
     controls: { discreteFire: true }
@@ -49,7 +56,7 @@ var GameController = function($scope) {
   // game to use it as the main player
   this.avatar = createPlayer('images/player.png');
   this.avatar.possess();
-  this.avatar.yaw.position.set(2, 14, 4);
+  this.avatar.position.set(0, 16, 0);
 
   this.setup();
 

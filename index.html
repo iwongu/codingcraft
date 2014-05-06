@@ -4,57 +4,46 @@
   <head>
     <title>Codingcraft</title>
     <meta charset="utf-8">
-    <style type="text/css">
-      body {
-        background-color: #f0f0f0;
-        margin: 0px;
-        overflow: hidden;
-      }
-      #container {
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        user-select: none;
-        width: 640px;
-        height: 480px;
-      }
-      #crosshair {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        margin: -16px 0 0 -16px;
-        width: 32px;
-        height: 32px;
-      }
-      #stats { bottom: 0px; right: 0px; }
-
-      .blocks {
-        position: fixed;
-        bottom: 10px;
-        width: 100%;
-      }
-      .blocks-center {
-        display: table;
-        margin: 0 auto;
-      }
-      .blocks img {
-        height: 32px;
-        width: 32px;
-        border: 2px solid transparent;
-      }
-      .blocks img.selected {
-        border: 2px solid red;
-      }
-    </style>
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
   </head>
   <body ng-controller="GameController as game">
     {% raw %}
-    <div id="container"></div>
-    <div id="crosshair"><img src="images/crosshair.png"/></div>
-    <div class="blocks">
-      <div class="blocks-center">
-        <span ng-repeat="icon in game.icons">
-          <img ng-src="/textures/{{icon}}.png" ng-class="{selected: game.currentMaterial == $index}">
-        </span>
+    <div id="container">
+      <div id="crosshair"><img src="images/crosshair.png"/></div>
+      <div class="blocks">
+        <div class="blocks-center">
+          <span ng-repeat="icon in game.icons">
+            <img ng-src="/textures/{{icon}}.png" ng-class="{selected: game.currentMaterial == $index}">
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div id="menu-container">
+      <div class="menu">
+        <div class="title">Codingcraft v0.1</div>
+        <div class="section">
+          <div class="section-title">Help</div>
+          <ul>
+            <li>Move - WASD or arrow keys</li>
+            <li>Remove a block - Mouse click</li>
+            <li>Put a block - Ctrl+mouse click</li>
+            <li>Change the block - Tab</li>
+            <li>Jump - Space</li>
+            <li>Fly - Space Space</li>
+            <li>Go down - Shift</li>
+          </ul>
+        </div>
+        <div class="section">
+          <div class="section-title">Related projects</div>
+          <ul>
+            <li><a href="https://github.com/iwongu/codingcraft">Codingcraft</a></li>
+            <li><a href="http://voxeljs.com/">voxel.js</a></li>
+            <li><a href="https://angularjs.org/">AngularJs</a></li>
+          </ul>
+        </div>
       </div>
     </div>
 
