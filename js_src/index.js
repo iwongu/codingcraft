@@ -11,6 +11,8 @@ var walk = require('voxel-walk')
 
 
 var GameController = function($scope) {
+  this.scope = $scope;
+
   var containerEl = window.document.getElementById('container');
 
   this.materials = [
@@ -27,7 +29,7 @@ var GameController = function($scope) {
       'obsidian',
       'plank',
       'redwool',
-      'whitewool']
+      'whitewool'];
 
   var opts = {
     generate: voxel.generator['Valley'],
@@ -52,6 +54,24 @@ var GameController = function($scope) {
   this.setup();
 
   window.game = this; // for debugging
+
+  this.icons = [
+    'grass',
+    'brickicon',
+    'dirt',
+    'diamondicon',
+    'bedrock',
+    'bluewoolicon',
+    'cobblestoneicon',
+    'crate',
+    'glowstoneicon',
+    'netherrackicon',
+    'obsidianicon',
+    'plankicon',
+    'redwoolicon',
+    'whitewoolicon'];
+
+  this.currentMaterial = 0;
 };
 
 GameController.prototype.setup = function() {  
@@ -60,35 +80,36 @@ GameController.prototype.setup = function() {
   this.game.flyer = makeFly(target);
   
   // highlight blocks when you look at them, hold <Ctrl> for block placement
-  var blockPosPlace, blockPosErase
-  var hl = this.game.highlighter = highlight(this.game, {color: 0xff0000, distance: 5});
+  var blockPosPlace, blockPosErase;
+  var hl = this.game.highlighter = highlight(this.game, {color: 0xff0000, distance: 8});
   hl.on('highlight', function (voxelPos) { blockPosErase = voxelPos });
   hl.on('remove', function (voxelPos) { blockPosErase = null });
   hl.on('highlight-adjacent', function (voxelPos) { blockPosPlace = voxelPos });
   hl.on('remove-adjacent', function (voxelPos) { blockPosPlace = null });
 
-  // block interaction stuff, uses highlight data
-  var currentMaterial = 1;
-
   // toggle between first and third person modes
   window.addEventListener('keydown', angular.bind(this, function (ev) {
-    if (ev.keyCode === 'R'.charCodeAt(0)) this.avatar.toggle();
+    if (ev.keyCode === 'R'.charCodeAt(0)) {
+      this.avatar.toggle();
+    }
     if (ev.keyCode == 9) {
       if (ev.shiftKey) {
-        currentMaterial -= 1;
-        if (currentMaterial == 0) {
-          currentMaterial = this.materials.length;
+        if (this.currentMaterial == 0) {
+          this.currentMaterial = this.materials.length - 1;
+        } else {
+          this.currentMaterial -= 1;
         }
       } else {
-        currentMaterial = (currentMaterial % this.materials.length) + 1;
+        this.currentMaterial = (this.currentMaterial + 1) % this.materials.length;
       }
     }
+    this.scope.$apply();
   }));
 
   this.game.on('fire', angular.bind(this, function (target, state) {
     var position = blockPosPlace;
     if (position) {
-      this.game.createBlock(position, currentMaterial);
+      this.game.createBlock(position, this.currentMaterial + 1);
     }
     else {
       position = blockPosErase;

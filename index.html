@@ -26,14 +26,41 @@
         height: 32px;
       }
       #stats { bottom: 0px; right: 0px; }
+
+      .blocks {
+        position: fixed;
+        bottom: 10px;
+        width: 100%;
+      }
+      .blocks-center {
+        display: table;
+        margin: 0 auto;
+      }
+      .blocks img {
+        height: 32px;
+        width: 32px;
+        border: 2px solid transparent;
+      }
+      .blocks img.selected {
+        border: 2px solid red;
+      }
     </style>
   </head>
   <body ng-controller="GameController as game">
+    {% raw %}
     <div id="container"></div>
     <div id="crosshair"><img src="images/crosshair.png"/></div>
+    <div class="blocks">
+      <div class="blocks-center">
+        <span ng-repeat="icon in game.icons">
+          <img ng-src="/textures/{{icon}}.png" ng-class="{selected: game.currentMaterial == $index}">
+        </span>
+      </div>
+    </div>
 
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
     <script src="js/bundle.js"></script>
+    {% endraw %}
   </body>
 </html>
 {% endautoescape %}
