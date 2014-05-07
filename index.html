@@ -36,20 +36,26 @@
           <li>Fly - Space Space</li>
           <li>Go down - Shift</li>
         </ul>
-        <div class="credits">Made by codingcraft@github with voxeljs@github</div>
+        <div class="credits">Made by codingcraft@github using voxeljs@github</div>
       </div>
     </div>
 
     <div id="menu-container">
       <div class="menu">
         <div class="title">Codingcraft v0.1</div>
-        <div class="section">
-          <div class="section-title">Related projects</div>
-          <ul>
-            <li><a href="https://github.com/iwongu/codingcraft">Codingcraft</a></li>
-            <li><a href="http://voxeljs.com/">voxel.js</a></li>
-            <li><a href="https://angularjs.org/">AngularJs</a></li>
-          </ul>
+        <div class="section code">
+          <div>
+            <textarea ng-model="game.code"></textarea>
+          </div>
+          <div>
+            <button ng-click="game.runCode()">Run</button>
+          </div>
+        </div>
+        <div class="section status">
+          <span>Target position: </span>
+          <span ng-show="game.blockPosPlace == null && game.blockPosErase == null">Not available</span>
+          <span ng-hide="game.blockPosPlace != null">{{game.blockPosErase}}</span>
+          <span ng-show="game.blockPosPlace != null">{{game.blockPosPlace}}</span>
         </div>
       </div>
     </div>

@@ -23,9 +23,10 @@ body {
 .help {
     display: table;
     margin: 100px auto 0;
+    font-weight: 300;
 }
 .help .title {
-    font-weight: 300;
+    font-weight: bold;
 }
 .help ul {
     list-style-type: circle;
@@ -104,4 +105,12 @@ body {
 
 .section-title {
     font-size: 20px;
+}
+
+.section.code textarea{
+    resize: none;
+    width: 355px;
+    height: 160px;
+    font-family: monospace;
+    font-size: 12px;
 }
