@@ -9,8 +9,9 @@ var fly = require('voxel-fly')
 var walk = require('voxel-walk')
 var GameApi = require('./gameapi');
 
-var GameController = function($scope) {
+var GameController = function($scope, $http) {
   this.scope = $scope;
+  this.http = $http;
 
   var containerEl = window.document.getElementById('container');
 
@@ -96,6 +97,48 @@ GameController.prototype.runCode = function() {
     this.code +
     '})();';
   eval(str);
+};
+
+GameController.prototype.save = function() {
+  var size = this.gameSize;
+  var data = '';
+  var codeOffset = '0'.charCodeAt(0);
+  for (var i = -size; i < size; i++) {
+    for (var j = -size; j < size; j++) {
+      for (var k = -size; k < size; k++) {
+        data += String.fromCharCode(codeOffset + this.game.getBlock([i, j, k]));
+      }
+    }
+  }
+
+  var params = $.param({'data': data});
+  this.http.post('/_/save_blocks/', params).
+    success(angular.bind(this, function(data) {
+    })).
+    error(angular.bind(this, function() {
+    }));
+};
+
+GameController.prototype.load = function() {
+  this.http.post('/_/load_blocks/').
+    success(angular.bind(this, function(data) {
+      var size = this.gameSize;
+      var codeOffset = '0'.charCodeAt(0);
+      for (var i = -size; i < size; i++) {
+        for (var j = -size; j < size; j++) {
+          for (var k = -size; k < size; k++) {
+            var index =
+              (i + size) * (size * 2) * (size * 2) +
+              (j + size) * (size * 2) +
+              (k + size);
+            var block = data.data[index];
+            this.game.setBlock([i, j, k], block.charCodeAt(0) - codeOffset);
+          }
+        }
+      }
+    })).
+    error(angular.bind(this, function() {
+    }));
 };
 
 GameController.prototype.setup = function() {  

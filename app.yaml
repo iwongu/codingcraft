@@ -7,16 +7,28 @@ threadsafe: true
 handlers:
 - url: /js
   static_dir: js
+
 - url: /css
   static_dir: css
+
 - url: /favicon.ico
   static_dir: images/favicon.ico
+
 - url: /images
   static_dir: images
+
 - url: /textures
   static_dir: js_src/node_modules/painterly-textures/textures
+
+- url: /_/.*
+  script: apis.application
+  login: required
+  secure: always
+
 - url: /.*
   script: main.application
+  login: required
+  secure: always
 
 
 libraries:

@@ -7,6 +7,8 @@
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="css/normalize.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
   </head>
   <body ng-controller="GameController as game">
     {% raw %}
@@ -50,6 +52,12 @@
           <div>
             <button ng-click="game.runCode()">Run</button>
           </div>
+          <div>
+            <button ng-click="game.save()">Save</button>
+          </div>
+          <div>
+            <button ng-click="game.load()">Load</button>
+          </div>
           <span>Target position: </span>
           <span ng-show="game.blockPosPlace == null && game.blockPosErase == null">Not available</span>
           <span ng-hide="game.blockPosPlace != null">{{game.blockPosErase}}</span>
@@ -83,7 +91,6 @@ cc.moveTo(0, 20, 0);</pre>
       </div>
     </div>
 
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
     <script src="js/bundle.js"></script>
     {% endraw %}
   </body>
