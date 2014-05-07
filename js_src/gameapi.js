@@ -11,6 +11,7 @@ var GameApi = function(gameController) {
 
 GameApi.prototype.setBlock = function(x, y, z, block) {
   if (!this.isIn(x, y, z)) { return; }
+  if (this.game.getBlock([x, y, z]) != 0) { return; }
   this.game.setBlock([x, y, z], block);
 };
 

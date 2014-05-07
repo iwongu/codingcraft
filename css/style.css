@@ -28,7 +28,7 @@ body {
 .help .title {
     font-weight: bold;
 }
-.help ul {
+ul {
     list-style-type: circle;
     padding-left: 30px;
 }
@@ -90,7 +90,13 @@ body {
 
 
 .menu {
-    margin: 20px;
+    margin: 20px 0 0 20px;
+    overflow-y: auto;
+    position: relative;
+    height: 100%;
+}
+.menu .section {
+    margin-bottom: 20px;
 }
 
 .title {
@@ -112,5 +118,13 @@ body {
     width: 355px;
     height: 160px;
     font-family: monospace;
+    font-size: 14px;
+}
+
+.api li {
+    font-family: monospace;
+    font-size: 12px;
+}
+.api pre {
     font-size: 12px;
 }

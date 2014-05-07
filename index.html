@@ -50,12 +50,35 @@
           <div>
             <button ng-click="game.runCode()">Run</button>
           </div>
-        </div>
-        <div class="section status">
           <span>Target position: </span>
           <span ng-show="game.blockPosPlace == null && game.blockPosErase == null">Not available</span>
           <span ng-hide="game.blockPosPlace != null">{{game.blockPosErase}}</span>
           <span ng-show="game.blockPosPlace != null">{{game.blockPosPlace}}</span>
+        </div>
+        <div class="section api">
+          <div class="title">API</div>
+          <div>The 'cc' and 'codingcraft' is same objects. To see the result of the code, you might need to play the game</div>
+          <ul>
+            <li>cc.setBlock(1, 1, 1, BLOCK.diamond);</li>
+            <li>cc.removeBlock(1, 1, 1);</li>
+            <li>cc.getBlock(1, 1, 1);</li>
+            <li>cc.move(1, 0, 0); // move left</li>
+            <li>cc.move(-1, 0, 0); // move right</li>
+            <li>cc.move(0, 0, 1); // move forward</li>
+            <li>cc.move(0, 0, -1); // move backward</li>
+            <li>cc.moveTo(0, 20, 0);</li>
+          </ul>
+          <div>Examples.</div>
+          <pre>for (var i = -10; i < 10; i++) {
+  for (var j = -10; j < 10; j++) {
+    for (var k = -10; k < 10; k++) {
+      if ((i*i + j*j + k*k) < 10*10) {
+        cc.setBlock(i, j+10, k, BLOCK.diamond);
+      }
+    }
+  }
+}
+cc.moveTo(0, 20, 0);</pre>
         </div>
       </div>
     </div>

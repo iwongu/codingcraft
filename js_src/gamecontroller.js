@@ -7,13 +7,14 @@ var voxel = require('voxel')
 var extend = require('extend')
 var fly = require('voxel-fly')
 var walk = require('voxel-walk')
+var GameApi = require('./gameapi');
 
 var GameController = function($scope) {
   this.scope = $scope;
 
   var containerEl = window.document.getElementById('container');
 
-  this.gameSize = 20;
+  this.gameSize = 30;
 
   this.materials = [
       ['grass', 'dirt', 'grass_dirt'],
@@ -88,10 +89,11 @@ var GameController = function($scope) {
 };
 
 GameController.prototype.runCode = function() {
-  var cc = this;
-  var str = 'use strict;' +
-    '(function() {' +
-    'cc.game.setBlock(10,10,10,1);'
+  var cc = new GameApi(this);
+  var str = '(function() {' +
+    'var codingcraft = cc;' +
+    'var BLOCK = cc.block;' +
+    this.code +
     '})();';
   eval(str);
 };
@@ -122,9 +124,11 @@ GameController.prototype.setup = function() {
 
   // toggle between first and third person modes
   window.addEventListener('keydown', angular.bind(this, function (ev) {
+    /*
     if (ev.keyCode === 'R'.charCodeAt(0)) {
       this.avatar.toggle();
     }
+    */
     if (ev.keyCode == 9) {
       if (ev.shiftKey) {
         if (this.currentMaterial == 0) {
