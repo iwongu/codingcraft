@@ -36,6 +36,11 @@ ul {
     font-size: 10px;
 }
 
+#user {
+    position: absolute;
+    right: 10px;
+}
+
 #menu-container {
     position: fixed;
     top: 0;

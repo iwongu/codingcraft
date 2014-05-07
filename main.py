@@ -1,9 +1,10 @@
 """Codingcraft server."""
 
-import os
-import urllib
+from google.appengine.api import users
 
 import jinja2
+import os
+import urllib
 import webapp2
 
 
@@ -15,7 +16,9 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        template_values = {}
+        user = users.get_current_user()
+        template_values = {
+            'username': user.nickname(), }
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
 

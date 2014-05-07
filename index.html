@@ -41,8 +41,12 @@
         <div class="credits">Made by codingcraft@github using voxeljs@github</div>
       </div>
     </div>
-
+    {% endraw %}
     <div id="menu-container">
+      <div id="user">
+        {{username}}
+      </div>
+      {% raw %}
       <div class="menu">
         <div class="title">Codingcraft v0.1</div>
         <div class="section code">
@@ -52,16 +56,18 @@
           <div>
             <button ng-click="game.runCode()">Run</button>
           </div>
-          <div>
-            <button ng-click="game.save()">Save</button>
-          </div>
-          <div>
-            <button ng-click="game.load()">Load</button>
-          </div>
           <span>Target position: </span>
           <span ng-show="game.blockPosPlace == null && game.blockPosErase == null">Not available</span>
           <span ng-hide="game.blockPosPlace != null">{{game.blockPosErase}}</span>
           <span ng-show="game.blockPosPlace != null">{{game.blockPosPlace}}</span>
+        </div>
+        <div class="section">
+          <div class="title">Menu</div>
+          <div>
+            <button ng-click="game.save()">Save</button>
+            <button ng-click="game.load()">Load</button>
+          </div>
+          <div>We're supporting only one storage. It will be more than one soon.</div>
         </div>
         <div class="section api">
           <div class="title">API</div>
@@ -89,10 +95,10 @@
 cc.moveTo(0, 20, 0);</pre>
         </div>
       </div>
+      {% endraw %}
     </div>
 
     <script src="js/bundle.js"></script>
-    {% endraw %}
   </body>
 </html>
 {% endautoescape %}
