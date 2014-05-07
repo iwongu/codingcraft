@@ -88,6 +88,12 @@ var GameController = function($scope) {
 };
 
 GameController.prototype.runCode = function() {
+  var cc = this;
+  var str = 'use strict;' +
+    '(function() {' +
+    'cc.game.setBlock(10,10,10,1);'
+    '})();';
+  eval(str);
 };
 
 GameController.prototype.setup = function() {  
