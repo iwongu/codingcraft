@@ -11,31 +11,38 @@
   <body ng-controller="GameController as game">
     {% raw %}
     <div id="container">
-      <div id="crosshair"><img src="images/crosshair.png"/></div>
+      <div id="crosshair" ng-hide="!game.hideCover">
+        <img src="images/crosshair.png"/>
+      </div>
       <div class="blocks">
         <div class="blocks-center">
-          <span ng-repeat="icon in game.icons">
-            <img ng-src="/textures/{{icon}}.png" ng-class="{selected: game.currentMaterial == $index}">
+          <span class="block" ng-repeat="icon in game.icons" ng-class="{selected: game.currentMaterial == $index}">
+            <img ng-src="/textures/{{icon}}.png">
+            <span class="block-name">{{icon}}</span>
           </span>
         </div>
+      </div>
+    </div>
+    <div id="cover" ng-hide="game.hideCover">
+      <div class="help">
+        <div class="title">Click to play!</div>
+        <div class="section">How to play.</div>
+        <ul>
+          <li>Move - W, A, S, D or arrow keys</li>
+          <li>Remove a block - Mouse click</li>
+          <li>Put a block - Ctrl+mouse click</li>
+          <li>Change the block - Tab</li>
+          <li>Jump - Space</li>
+          <li>Fly - Space Space</li>
+          <li>Go down - Shift</li>
+        </ul>
+        <div class="credits">Made by codingcraft@github with voxeljs@github</div>
       </div>
     </div>
 
     <div id="menu-container">
       <div class="menu">
         <div class="title">Codingcraft v0.1</div>
-        <div class="section">
-          <div class="section-title">Help</div>
-          <ul>
-            <li>Move - WASD or arrow keys</li>
-            <li>Remove a block - Mouse click</li>
-            <li>Put a block - Ctrl+mouse click</li>
-            <li>Change the block - Tab</li>
-            <li>Jump - Space</li>
-            <li>Fly - Space Space</li>
-            <li>Go down - Shift</li>
-          </ul>
-        </div>
         <div class="section">
           <div class="section-title">Related projects</div>
           <ul>

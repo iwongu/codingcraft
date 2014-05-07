@@ -10,11 +10,12 @@ var extend = require('extend')
 var fly = require('voxel-fly')
 var walk = require('voxel-walk')
 
-
 var GameController = function($scope) {
   this.scope = $scope;
 
   var containerEl = window.document.getElementById('container');
+
+  this.gameSize = 30;
 
   this.materials = [
       ['grass', 'dirt', 'grass_dirt'],
@@ -57,7 +58,7 @@ var GameController = function($scope) {
   // game to use it as the main player
   this.avatar = createPlayer('images/player.png');
   this.avatar.possess();
-  this.avatar.position.set(0, 16, 0);
+  this.avatar.position.set(0, 1, 0);
 
   this.setup();
 
@@ -65,21 +66,22 @@ var GameController = function($scope) {
 
   this.icons = [
     'grass',
-    'brickicon',
+    'brick',
     'dirt',
-    'diamondicon',
+    'diamond',
     'bedrock',
-    'bluewoolicon',
-    'cobblestoneicon',
+    'bluewool',
+    'cobblestone',
     'crate',
-    'glowstoneicon',
-    'netherrackicon',
-    'obsidianicon',
-    'plankicon',
-    'redwoolicon',
-    'whitewoolicon'];
+    'glowstone',
+    'netherrack',
+    'obsidian',
+    'plank',
+    'redwool',
+    'whitewool'];
 
   this.currentMaterial = 0;
+  this.hideCover = false;
 };
 
 GameController.prototype.setup = function() {  
@@ -125,15 +127,23 @@ GameController.prototype.setup = function() {
     }
   }));
 
-  this.game.on('tick', function() {
+  this.game.on('tick', angular.bind(this, function() {
     walk.render(target.playerSkin);
     var vx = Math.abs(target.velocity.x);
     var vz = Math.abs(target.velocity.z);
     if (vx > 0.001 || vz > 0.001) walk.stopWalking();
     else walk.startWalking();
-  })
-};
+  }));
 
+  this.game.interact.on('attain', angular.bind(this, function() {
+    this.hideCover = true;
+    this.scope.$apply();
+  }));
+  this.game.interact.on('release', angular.bind(this, function() {
+    this.hideCover = false;
+    this.scope.$apply();
+  }));
+};
 
 
 var ccApp = angular.module('cc', []);
