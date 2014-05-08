@@ -92,6 +92,9 @@ var GameController = function($scope, $http) {
     this.codes[i] = '';
   }
   this.currentCode = 0;
+
+  this.loadMap();
+  this.loadCodes();
 };
 
 GameController.prototype.setCurrentCode = function(current) {
@@ -108,7 +111,30 @@ GameController.prototype.runCode = function(current) {
   eval(str);
 };
 
-GameController.prototype.save = function() {
+GameController.prototype.saveCodes = function() {
+  var params = $.param({'codes': this.codes});
+  this.http.post('/_/save_codes/', params).
+    success(angular.bind(this, function(data) {
+    })).
+    error(angular.bind(this, function() {
+    }));
+};
+
+GameController.prototype.loadCodes = function() {
+  this.http.post('/_/load_codes/').
+    success(angular.bind(this, function(data) {
+      if (data.result != 'ok') {
+        return;
+      }
+      for (var i = 0; i < this.codeCount; i++) {
+        this.codes[i] = data.codes[i] || '';
+      }
+    })).
+    error(angular.bind(this, function() {
+    }));
+};
+
+GameController.prototype.saveMap = function() {
   var size = this.gameSize;
   var data = '';
   var codeOffset = '0'.charCodeAt(0);
@@ -128,9 +154,12 @@ GameController.prototype.save = function() {
     }));
 };
 
-GameController.prototype.load = function() {
+GameController.prototype.loadMap = function() {
   this.http.post('/_/load_blocks/').
     success(angular.bind(this, function(data) {
+      if (data.result != 'ok') {
+        return;
+      }
       var size = this.gameSize;
       var codeOffset = '0'.charCodeAt(0);
       for (var i = -size; i < size; i++) {
@@ -185,7 +214,9 @@ GameController.prototype.setup = function() {
     var codeOffset = '1'.charCodeAt(0);
     for (var i = 0; i < this.codeCount; i++) {
       if (ev.keyCode === codeOffset + i) {
-        this.runCode(i);
+        if (ev.ctrlKey) {
+          this.runCode(i);
+        }
       }
     }
     if (ev.keyCode == 9) {

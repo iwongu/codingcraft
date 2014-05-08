@@ -59,7 +59,10 @@
                     ng-click="game.setCurrentCode($index)">
               {{$index+1}}
             </button>
-            <button ng-click="game.runCode(game.currentCode)">Run current code</button>
+            <div>To run the code, press the number with Ctrl key.</div>
+          </div>
+          <div>
+            <button ng-click="game.saveCodes()">Save codes</button>
           </div>
           <span>Target position: </span>
           <span ng-show="game.blockPosPlace == null && game.blockPosErase == null">Not available</span>
@@ -69,8 +72,8 @@
         <div class="section">
           <div class="title">Menu</div>
           <div>
-            <button ng-click="game.save()">Save</button>
-            <button ng-click="game.load()">Load</button>
+            <button ng-click="game.saveMap()">Save map</button>
+            <!-- <button ng-click="game.loadMap()">Load map</button> -->
           </div>
           <div>We're supporting only one storage. It will be more than one soon.</div>
         </div>
