@@ -260,6 +260,7 @@ GameController.prototype.setup = function() {
     }
   }));
 
+  /*
   this.game.on('tick', angular.bind(this, function() {
     walk.render(target.playerSkin);
     var vx = Math.abs(target.velocity.x);
@@ -267,6 +268,7 @@ GameController.prototype.setup = function() {
     if (vx > 0.001 || vz > 0.001) walk.stopWalking();
     else walk.startWalking();
   }));
+  */
 
   this.game.interact.on('attain', angular.bind(this, function() {
     this.hideCover = true;
