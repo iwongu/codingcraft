@@ -133,6 +133,7 @@ button.selected {
 .error {
     font-style: italic;
     color: red;
+    font-size: 12px;
 }
 
 .api li {
