@@ -104,6 +104,11 @@ ul {
     margin-bottom: 20px;
 }
 
+button.selected {
+    font-weight: bold;
+    color: red;
+}
+
 .title {
     font-size: 30px;
     font-weight: bold;

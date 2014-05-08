@@ -86,15 +86,24 @@ var GameController = function($scope, $http) {
   this.blockPosPlace = null;
   this.blockPosErase = null;
 
-  this.code = '';
+  this.codeCount = 5;
+  this.codes = [];
+  for (var i = 0; i < this.codeCount; i++) {
+    this.codes[i] = '';
+  }
+  this.currentCode = 0;
 };
 
-GameController.prototype.runCode = function() {
+GameController.prototype.setCurrentCode = function(current) {
+  this.currentCode = current;
+};
+
+GameController.prototype.runCode = function(current) {
   var cc = new GameApi(this);
   var str = '(function() {' +
     'var codingcraft = cc;' +
     'var BLOCK = cc.block;' +
-    this.code +
+    this.codes[current] +
     '})();';
   eval(str);
 };
@@ -172,6 +181,13 @@ GameController.prototype.setup = function() {
       this.avatar.toggle();
     }
     */
+
+    var codeOffset = '1'.charCodeAt(0);
+    for (var i = 0; i < this.codeCount; i++) {
+      if (ev.keyCode === codeOffset + i) {
+        this.runCode(i);
+      }
+    }
     if (ev.keyCode == 9) {
       if (ev.shiftKey) {
         if (this.currentMaterial == 0) {

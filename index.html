@@ -51,10 +51,15 @@
         <div class="title">Codingcraft v0.1</div>
         <div class="section code">
           <div>
-            <textarea ng-model="game.code"></textarea>
+            <textarea ng-model="game.codes[game.currentCode]"></textarea>
           </div>
           <div>
-            <button ng-click="game.runCode()">Run</button>
+            <button ng-repeat="code in game.codes track by $index"
+                    ng-class="{selected: game.currentCode == $index}"
+                    ng-click="game.setCurrentCode($index)">
+              {{$index+1}}
+            </button>
+            <button ng-click="game.runCode(game.currentCode)">Run current code</button>
           </div>
           <span>Target position: </span>
           <span ng-show="game.blockPosPlace == null && game.blockPosErase == null">Not available</span>
