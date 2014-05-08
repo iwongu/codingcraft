@@ -53,6 +53,7 @@
           <div>
             <textarea ng-model="game.codes[game.currentCode]"></textarea>
           </div>
+          <div class="error">{{game.syntaxError}}</div>
           <div>
             <button ng-repeat="code in game.codes track by $index"
                     ng-class="{selected: game.currentCode == $index}"
@@ -73,6 +74,7 @@
           <div class="title">Menu</div>
           <div>
             <button ng-click="game.saveMap()">Save map</button>
+            <button ng-click="game.resetMap()">Reset map</button>
             <!-- <button ng-click="game.loadMap()">Load map</button> -->
           </div>
           <div>We're supporting only one storage. It will be more than one soon.</div>
@@ -81,26 +83,30 @@
           <div class="title">API</div>
           <div>The 'cc' and 'codingcraft' is same objects. To see the result of the code, you might need to play the game</div>
           <ul>
-            <li>cc.setBlock(1, 1, 1, BLOCK.diamond);</li>
-            <li>cc.removeBlock(1, 1, 1);</li>
-            <li>cc.getBlock(1, 1, 1);</li>
-            <li>cc.move(1, 0, 0); // move left</li>
-            <li>cc.move(-1, 0, 0); // move right</li>
-            <li>cc.move(0, 0, 1); // move forward</li>
-            <li>cc.move(0, 0, -1); // move backward</li>
-            <li>cc.moveTo(0, 20, 0);</li>
+            <li>cc.setBlock([1, 1, 1], BLOCK.diamond);</li>
+            <li>cc.removeBlock([1, 1, 1]);</li>
+            <li>cc.getBlock([1, 1, 1]);</li>
+            <li>cc.getTargetPosition();</li>
+            <li>cc.move([1, 0, 0]);</li>
+            <li>cc.moveTo([0, 20, 0]);</li>
           </ul>
           <div>Examples.</div>
-          <pre>for (var i = -10; i < 10; i++) {
+          <pre>// Big ball.
+for (var i = -10; i < 10; i++) {
   for (var j = -10; j < 10; j++) {
     for (var k = -10; k < 10; k++) {
       if ((i*i + j*j + k*k) < 10*10) {
-        cc.setBlock(i, j+10, k, BLOCK.diamond);
+        cc.setBlock([i, j+10, k], BLOCK.diamond);
       }
     }
   }
 }
-cc.moveTo(0, 20, 0);</pre>
+cc.moveTo([0, 20, 0]);</pre>
+          <pre>// Pole.
+var pos = cc.getTargetPosition();
+for (var i = 0; i < 10; i++) {
+  cc.setBlock([pos[0], pos[1] + i, pos[2]], BLOCK.diamond);
+}</pre>
         </div>
       </div>
       {% endraw %}

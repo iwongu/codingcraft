@@ -108,7 +108,12 @@ GameController.prototype.runCode = function(current) {
     'var BLOCK = cc.block;' +
     this.codes[current] +
     '})();';
-  eval(str);
+  try {
+    eval(str);
+    this.syntaxError = '';
+  } catch (e) {
+    this.syntaxError = e.message;
+  }
 };
 
 GameController.prototype.saveCodes = function() {
@@ -152,6 +157,17 @@ GameController.prototype.saveMap = function() {
     })).
     error(angular.bind(this, function() {
     }));
+};
+
+GameController.prototype.resetMap = function() {
+  var size = this.gameSize;
+  for (var i = -size; i < size; i++) {
+    for (var j = -size; j < size; j++) {
+      for (var k = -size; k < size; k++) {
+        this.game.setBlock([i, j, k], this.game.generate(i, j, k));
+      }
+    }
+  }
 };
 
 GameController.prototype.loadMap = function() {
@@ -214,7 +230,7 @@ GameController.prototype.setup = function() {
     var codeOffset = '1'.charCodeAt(0);
     for (var i = 0; i < this.codeCount; i++) {
       if (ev.keyCode === codeOffset + i) {
-        if (ev.ctrlKey) {
+        if (ev.altKey) {
           this.runCode(i);
         }
       }
