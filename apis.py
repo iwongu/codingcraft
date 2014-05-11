@@ -1,19 +1,21 @@
 from google.appengine.api import users
 
 import data
+import datetime
 import json
 import webapp2
 
 
-class SaveBlocks(webapp2.RequestHandler):
+class SaveMap(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
-        result = data.Blocks.query(data.Blocks.owner == user).fetch()
+        result = data.Map.query(data.Map.owner == user).fetch()
         blocks = None
         if len(result) > 0:
             blocks = result[0]
         if blocks is None:
-            blocks = data.Blocks()
+            blocks = data.Map()
+            blocks.created = datetime.datetime.now()
             blocks.owner = user
 
         blocks.data = self.request.get('data')
@@ -23,10 +25,10 @@ class SaveBlocks(webapp2.RequestHandler):
         self.response.write(json.dumps(response))
 
 
-class LoadBlocks(webapp2.RequestHandler):
+class LoadMap(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
-        result = data.Blocks.query(data.Blocks.owner == user).fetch()
+        result = data.Map.query(data.Map.owner == user).fetch()
         if len(result) == 0:
             response = {'result': 'not_found' }
             self.response.write(json.dumps(response))
@@ -78,8 +80,8 @@ class LoadCodes(webapp2.RequestHandler):
 
 
 application = webapp2.WSGIApplication([
-        ('/_/save_blocks/', SaveBlocks),
-        ('/_/load_blocks/', LoadBlocks),
+        ('/_/save_map/', SaveMap),
+        ('/_/load_map/', LoadMap),
         ('/_/save_codes/', SaveCodes),
         ('/_/load_codes/', LoadCodes),
     ], debug=True)

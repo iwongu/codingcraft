@@ -10,6 +10,8 @@ var walk = require('voxel-walk')
 var GameApi = require('./gameapi');
 
 var GameController = function($scope, $http) {
+  //window.game = this; // for debugging
+
   this.scope = $scope;
   this.http = $http;
 
@@ -61,8 +63,6 @@ var GameController = function($scope, $http) {
   this.avatar.position.set(0, 1, 0);
 
   this.setup();
-
-  window.game = this; // for debugging
 
   this.icons = [
     'grass',
@@ -152,7 +152,7 @@ GameController.prototype.saveMap = function() {
   }
 
   var params = $.param({'data': data});
-  this.http.post('/_/save_blocks/', params).
+  this.http.post('/_/save_map/', params).
     success(angular.bind(this, function(data) {
     })).
     error(angular.bind(this, function() {
@@ -171,7 +171,7 @@ GameController.prototype.resetMap = function() {
 };
 
 GameController.prototype.loadMap = function() {
-  this.http.post('/_/load_blocks/').
+  this.http.post('/_/load_map/').
     success(angular.bind(this, function(data) {
       if (data.result != 'ok') {
         return;

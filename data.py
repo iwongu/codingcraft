@@ -1,12 +1,13 @@
 from google.appengine.ext import ndb
 
 
-class Blocks(ndb.Model):
+class Map(ndb.Model):
     owner = ndb.UserProperty()
     authors = ndb.StringProperty(repeated=True)
     name = ndb.StringProperty()
     created = ndb.DateTimeProperty()
     updated = ndb.DateTimeProperty()
+    type = ndb.StringProperty()
     data = ndb.TextProperty()
 
 
