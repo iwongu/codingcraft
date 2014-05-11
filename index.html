@@ -55,15 +55,17 @@
           </div>
           <div class="error" ng-cloak>{{game.syntaxError}}</div>
           <div>
-            <button ng-repeat="code in game.codes track by $index"
-                    ng-class="{selected: game.currentCode == $index}"
-                    ng-click="game.setCurrentCode($index)">
-              {{$index+1}}
-            </button>
+            <span class="button-container" ng-repeat="code in game.codes track by $index">
+              <button class="button primary"
+                      ng-class="{checked: game.currentCode == $index}"
+                      ng-click="game.setCurrentCode($index)">
+                {{$index+1}}
+              </button>
+            </span>
             <div>To run the code, press the number with Alt key.</div>
           </div>
           <div>
-            <button ng-click="game.saveCodes()">Save codes</button>
+            <button class="button primary" ng-click="game.saveCodes()">Save codes</button>
           </div>
           <span>Target position: </span>
           <span ng-show="game.blockPosPlace == null && game.blockPosErase == null">Not available</span>
@@ -73,8 +75,12 @@
         <div class="section">
           <div class="title">Menu</div>
           <div>
-            <button ng-click="game.saveMap()">Save map</button>
-            <button ng-click="game.resetMap()">Reset map</button>
+            <span class="button-container">
+              <button class="button primary" ng-click="game.saveMap()">Save map</button>
+            </span>
+            <span class="button-container">
+              <button class="button secondary" ng-click="game.resetMap()">Reset map</button>
+            </span>
             <!-- <button ng-click="game.loadMap()">Load map</button> -->
           </div>
           <div>We're supporting only one map. It will be more than one soon.</div>

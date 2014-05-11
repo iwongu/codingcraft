@@ -19,6 +19,7 @@ class SaveMap(webapp2.RequestHandler):
             blocks.owner = user
 
         blocks.data = self.request.get('data')
+        blocks.updated = datetime.datetime.now()
         key = blocks.put()
 
         response = {'result': 'ok', 'key': key.id() }

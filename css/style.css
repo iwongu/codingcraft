@@ -1,3 +1,5 @@
+@import url(button.css);
+
 body {
     background-color: #fff;
     margin: 0px;
@@ -104,11 +106,6 @@ ul {
     margin-bottom: 20px;
 }
 
-button.selected {
-    font-weight: bold;
-    color: red;
-}
-
 .title {
     font-size: 30px;
     font-weight: bold;
@@ -142,4 +139,9 @@ button.selected {
 }
 .api pre {
     font-size: 12px;
+}
+
+.button-container {
+    display: inline-block;
+    margin-right: 5px;
 }
