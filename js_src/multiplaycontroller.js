@@ -7,13 +7,14 @@ var voxel = require('voxel')
 var extend = require('extend')
 var fly = require('voxel-fly')
 var walk = require('voxel-walk')
+var inherits = require('inherits')
+var BaseController = require('./basecontroller');
+
 
 var MultiplayController = function($scope, $http, $window) {
+  BaseController.call(this, $scope, $http, $window);
   window.game = this; // for debugging
 
-  this.scope = $scope;
-  this.http = $http;
-  this.window = $window;
   this.initdata = $window.MC_initdata;
   this.initdata.socket.onopen = angular.bind(this, this.onOpen);
   this.initdata.socket.onmessage = angular.bind(this, this.onMessage);
@@ -104,6 +105,7 @@ var MultiplayController = function($scope, $http, $window) {
   this.loadMap();
   this.loadCodes();
 };
+inherits(MultiplayController, BaseController)
 
 MultiplayController.prototype.setCurrentCode = function(current) {
   this.currentCode = current;

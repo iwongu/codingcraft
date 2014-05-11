@@ -7,14 +7,14 @@ var voxel = require('voxel')
 var extend = require('extend')
 var fly = require('voxel-fly')
 var walk = require('voxel-walk')
+var inherits = require('inherits')
 var GameApi = require('./gameapi');
+var BaseController = require('./basecontroller');
+
 
 var GameController = function($scope, $http, $window) {
+  BaseController.call(this, $scope, $http, $window);
   //window.game = this; // for debugging
-
-  this.scope = $scope;
-  this.http = $http;
-  this.window = $window;
 
   var containerEl = window.document.getElementById('container');
 
@@ -99,6 +99,7 @@ var GameController = function($scope, $http, $window) {
   this.loadMap();
   this.loadCodes();
 };
+inherits(GameController, BaseController)
 
 GameController.prototype.setCurrentCode = function(current) {
   this.currentCode = current;
