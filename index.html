@@ -44,7 +44,7 @@
     {% endraw %}
     <div id="menu-container">
       <div id="user">
-        {{username}}
+        {% raw %}{{game.mapKey}}{% endraw %} - {{username}}
       </div>
       <div class="menu">
         {% raw %}
@@ -81,9 +81,11 @@
             <span class="button-container">
               <button class="button secondary" ng-click="game.resetMap()">Reset map</button>
             </span>
+            <!--
             <span class="button-container">
               <button class="button secondary" ng-click="game.startMultiplay()">Start multiplay</button>
             </span>
+            -->
           </div>
           <div>We're supporting only one map. It will be more than one soon.</div>
         </div>

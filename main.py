@@ -35,12 +35,14 @@ class MultiplayPage(webapp2.RequestHandler):
             self.error(404)
             self.response.out.write('Game not found.')
             return
-        if result.owner != user:
-            self.error(404)
-            self.response.out.write('You have to be an owner to start multiplay using this map.')
-            return
 
-        token = channel.create_channel(user.user_id() + key)
+        # if result.owner != user:
+        #     self.error(404)
+        #     self.response.out.write('You have to be an owner to start multiplay using this map.')
+        #     return
+
+        # token = channel.create_channel(user.user_id() + key)
+        token = channel.create_channel(result.owner.user_id() + key)
         template_values = {
             'username': user.nickname(),
             'user_id': user.user_id(),
