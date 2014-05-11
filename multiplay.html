@@ -1,0 +1,51 @@
+<!doctype html>
+{% autoescape true %}
+<html ng-app="mc">
+  <head>
+    <title>Codingcraft</title>
+    <meta charset="utf-8">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+  </head>
+  <body ng-controller="MultiplayController as game">
+    {% raw %}
+    <div id="container">
+      <div id="crosshair" ng-hide="!game.hideCover">
+        <img src="images/crosshair.png"/>
+      </div>
+      <div class="blocks">
+        <div class="blocks-center">
+          <span class="block" ng-repeat="icon in game.icons" ng-class="{selected: game.currentMaterial == $index}">
+            <img ng-src="/textures/{{icon}}.png">
+            <span class="block-name">{{icon}}</span>
+          </span>
+        </div>
+      </div>
+    </div>
+    {% endraw %}
+
+    <div id="menu-container">
+      <div id="user">
+        {{username}}
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/_ah/channel/jsapi"></script>
+    <script type="text/javascript">
+      var channel = new goog.appengine.Channel('{{channel_token}}');
+      var socket = channel.open();
+      window.MC_initdata = {
+        key: '{{key}}',
+        token: '{{channel_token}}',
+        user_id: '{{user_id}}',
+        socket: socket
+      };
+    </script>
+    <script src="js/multiplay_bundle.js"></script>
+  </body>
+</html>
+{% endautoescape %}
+

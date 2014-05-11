@@ -1,3 +1,4 @@
+from google.appengine.api import channel
 from google.appengine.api import users
 
 import data
@@ -43,6 +44,22 @@ class LoadMap(webapp2.RequestHandler):
         self.response.write(json.dumps(response));
 
 
+class LoadMapById(webapp2.RequestHandler):
+    def post(self):
+        key = self.request.get('key')
+        result = data.Map.get_by_id(long(key))
+        if result is None:
+            self.error(404)
+            self.response.out.write('not_found.')
+            return
+
+        response = {
+            'result': 'ok',
+            'key': result.key.id(),
+            'data': result.data }
+        self.response.write(json.dumps(response));
+
+
 class SaveCodes(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
@@ -80,9 +97,22 @@ class LoadCodes(webapp2.RequestHandler):
         self.response.write(json.dumps(response));
 
 
+class SendMessage(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        token = self.request.get('token')
+        data = {
+            'message': self.request.get('message'),
+            'user_id': user.user_id()
+            }            
+        channel.send_message(token, json.dumps(data))
+
+
 application = webapp2.WSGIApplication([
         ('/_/save_map/', SaveMap),
         ('/_/load_map/', LoadMap),
+        ('/_/load_map_by_id/', LoadMapById),
         ('/_/save_codes/', SaveCodes),
         ('/_/load_codes/', LoadCodes),
+        ('/_/send_message/', SendMessage),
     ], debug=True)

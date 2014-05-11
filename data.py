@@ -7,7 +7,7 @@ class Map(ndb.Model):
     name = ndb.StringProperty()
     created = ndb.DateTimeProperty()
     updated = ndb.DateTimeProperty()
-    type = ndb.StringProperty()
+    version = ndb.StringProperty()
     data = ndb.TextProperty()
 
 

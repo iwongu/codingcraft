@@ -7,14 +7,19 @@ var voxel = require('voxel')
 var extend = require('extend')
 var fly = require('voxel-fly')
 var walk = require('voxel-walk')
-var GameApi = require('./gameapi');
 
-var GameController = function($scope, $http, $window) {
-  //window.game = this; // for debugging
+var MultiplayController = function($scope, $http, $window) {
+  window.game = this; // for debugging
 
   this.scope = $scope;
   this.http = $http;
   this.window = $window;
+  this.initdata = $window.MC_initdata;
+  this.initdata.socket.onopen = angular.bind(this, this.onOpen);
+  this.initdata.socket.onmessage = angular.bind(this, this.onMessage);
+  this.initdata.socket.onerror = angular.bind(this, this.onError);
+  this.initdata.socket.onclose = angular.bind(this, this.onClose);
+
 
   var containerEl = window.document.getElementById('container');
 
@@ -100,11 +105,11 @@ var GameController = function($scope, $http, $window) {
   this.loadCodes();
 };
 
-GameController.prototype.setCurrentCode = function(current) {
+MultiplayController.prototype.setCurrentCode = function(current) {
   this.currentCode = current;
 };
-
-GameController.prototype.runCode = function(current) {
+/*
+MultiplayController.prototype.runCode = function(current) {
   var cc = new GameApi(this);
   var str = '(function() {' +
     'var codingcraft = cc;' +
@@ -118,8 +123,8 @@ GameController.prototype.runCode = function(current) {
     this.syntaxError = e.message;
   }
 };
-
-GameController.prototype.saveCodes = function() {
+*/
+MultiplayController.prototype.saveCodes = function() {
   var params = $.param({'codes': this.codes});
   this.http.post('/_/save_codes/', params).
     success(angular.bind(this, function(data) {
@@ -128,7 +133,7 @@ GameController.prototype.saveCodes = function() {
     }));
 };
 
-GameController.prototype.loadCodes = function() {
+MultiplayController.prototype.loadCodes = function() {
   this.http.post('/_/load_codes/').
     success(angular.bind(this, function(data) {
       if (data.result != 'ok') {
@@ -142,7 +147,7 @@ GameController.prototype.loadCodes = function() {
     }));
 };
 
-GameController.prototype.saveMap = function() {
+MultiplayController.prototype.saveMap = function() {
   var size = this.gameSize;
   var data = '';
   var codeOffset = '0'.charCodeAt(0);
@@ -162,7 +167,7 @@ GameController.prototype.saveMap = function() {
     }));
 };
 
-GameController.prototype.resetMap = function() {
+MultiplayController.prototype.resetMap = function() {
   var size = this.gameSize;
   for (var i = -size; i < size; i++) {
     for (var j = -size; j < size; j++) {
@@ -173,8 +178,9 @@ GameController.prototype.resetMap = function() {
   }
 };
 
-GameController.prototype.loadMap = function() {
-  this.http.post('/_/load_map/').
+MultiplayController.prototype.loadMap = function() {
+  var params = $.param({'key': this.initdata.key});
+  this.http.post('/_/load_map_by_id/', params).
     success(angular.bind(this, function(data) {
       if (data.result != 'ok') {
         return;
@@ -199,11 +205,7 @@ GameController.prototype.loadMap = function() {
     }));
 };
 
-GameController.prototype.startMultiplay = function() {
-  this.window.open('/start?key=' + this.mapKey);
-};
-
-GameController.prototype.setup = function() {  
+MultiplayController.prototype.setup = function() {  
   var makeFly = fly(this.game);
   var target = this.game.controls.target();
   this.game.flyer = makeFly(target);
@@ -258,14 +260,33 @@ GameController.prototype.setup = function() {
   }));
 
   this.game.on('fire', angular.bind(this, function (target, state) {
+    var blocks = [];
     var position = this.blockPosPlace;
     if (position) {
-      this.game.createBlock(position, this.currentMaterial + 1);
+      blocks.push({position: position, material: this.currentMaterial + 1});
     }
     else {
       position = this.blockPosErase;
-      if (position) this.game.setBlock(position, 0);
+      if (position) blocks.push({position: position, material: 0});
     }
+
+    if (blocks.length == 0) {
+      return;
+    }
+
+    var message = {
+      blocks: blocks,
+      position: [this.avatar.position.x, this.avatar.position.y, this.avatar.position.z]
+    };
+    var params = $.param({
+      'token': this.initdata.token,
+      'message': angular.toJson(message)
+    });
+    this.http.post('/_/send_message/', params).
+      success(angular.bind(this, function(data) {
+      })).
+      error(angular.bind(this, function() {
+      }));
   }));
 
   /*
@@ -288,5 +309,26 @@ GameController.prototype.setup = function() {
   }));
 };
 
+MultiplayController.prototype.onOpen = function() {  
+};
 
-module.exports = GameController;
+MultiplayController.prototype.onMessage = function(message) {  
+  var data = angular.fromJson(message.data);
+  var userId = data.user_id;
+  var message = angular.fromJson(data.message);
+  var blocks = message.blocks;
+  for (var i = 0; i < blocks.length; i++) {
+    this.game.setBlock(blocks[i].position, blocks[i].material);
+  }
+  if (userId != this.initdata.user_id) {
+    // move avatars.
+  }
+};
+
+MultiplayController.prototype.onError = function(error) {  
+};
+
+MultiplayController.prototype.onClose = function() {  
+};
+
+module.exports = MultiplayController;

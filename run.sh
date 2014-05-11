@@ -1,1 +1,2 @@
-browserify ./js_src/index.js | uglifyjs > ./js/bundle.js
+browserify ./js_src/game.js | uglifyjs > ./js/game_bundle.js
+browserify ./js_src/multiplay.js | uglifyjs > ./js/multiplay_bundle.js
