@@ -61,13 +61,15 @@ var MultiplayController = function($scope, $http, $window) {
   this.game.appendTo(containerEl);
   if (this.game.notCapable()) return this.game;
 
-  var createPlayer = player(this.game);
+  this.createPlayer = player(this.game);
 
   // create the player from a minecraft skin file and tell the
   // game to use it as the main player
-  this.avatar = createPlayer('images/player.png');
+  this.avatar = this.createPlayer('images/player.png');
   this.avatar.possess();
   this.avatar.position.set(0, 1, 0);
+
+  this.players = {};
 
   this.setup();
 
@@ -323,7 +325,10 @@ MultiplayController.prototype.onMessage = function(message) {
     this.game.setBlock(blocks[i].position, blocks[i].material);
   }
   if (userId != this.initdata.user_id) {
-    // move avatars.
+    if (!this.players[userId]) {
+      this.players[userId] = this.createPlayer('images/player.png');
+    }
+    this.players[userId].position.set(message.position[0], message.position[1], message.position[2]);
   }
 };
 
