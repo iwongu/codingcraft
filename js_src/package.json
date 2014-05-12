@@ -2,14 +2,15 @@
   "name": "codingcraft",
   "version": "0.0.1",
   "dependencies": {
+    "extend": "1.1.3",
+    "inherits": "1.0.0",
+    "minecraft-skin": "~0.1.0",
     "painterly-textures": "",
     "voxel": "0.3.1",
     "voxel-engine": "~0.18.0",
+    "voxel-fly": "~0.1.0",
     "voxel-highlight": "0.0.9",
     "voxel-player": "0.1.0",
-    "voxel-fly": "~0.1.0",
-    "voxel-walk": "git://github.com/flyswatter/voxel-walk.git",
-    "extend": "1.1.3",
-    "inherits": "1.0.0"
+    "voxel-walk": "git://github.com/flyswatter/voxel-walk.git"
   }
 }
