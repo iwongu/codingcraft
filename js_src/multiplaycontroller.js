@@ -78,7 +78,11 @@ MultiplayController.prototype.setup = function() {
 
     var message = {
       blocks: blocks,
-      position: [this.avatar.position.x, this.avatar.position.y, this.avatar.position.z]
+      player: {
+        position: this.avatar.position,
+        velocity: this.avatar.velocity,
+        rotation: this.avatar.rotation
+      }
     };
     var params = $.param({
       'token': this.initdata.token,
@@ -100,17 +104,26 @@ MultiplayController.prototype.onMessage = function(message) {
   var userId = data.user_id;
   var message = angular.fromJson(data.message);
   var blocks = message.blocks;
-  for (var i = 0; i < blocks.length; i++) {
-    this.game.setBlock(blocks[i].position, blocks[i].material);
-  }
-  if (userId != this.initdata.user_id) {
-    if (!this.players[userId]) {
-      this.players[userId] = skin(this.game.THREE, 'images/player.png', this.skinOpts);
-      this.game.scene.add(this.players[userId].mesh);
+  var player = message.player;
+  if (blocks) {
+    for (var i = 0; i < blocks.length; i++) {
+      this.game.setBlock(blocks[i].position, blocks[i].material);
     }
-    this.players[userId].mesh.position.x = message.position[0];
-    this.players[userId].mesh.position.y = message.position[1];
-    this.players[userId].mesh.position.z = message.position[2];
+  }
+  if (player) {
+    if (userId != this.initdata.user_id) {
+      if (!this.players[userId]) {
+        this.players[userId] = skin(this.game.THREE, 'images/player.png', this.skinOpts);
+        this.game.scene.add(this.players[userId].mesh);
+      }
+      this.players[userId].mesh.position.x = player.position.x;
+      this.players[userId].mesh.position.y = player.position.y;
+      this.players[userId].mesh.position.z = player.position.z;
+
+      this.players[userId].mesh.rotation.x = player.rotation.x;
+      this.players[userId].mesh.rotation.y = player.rotation.y;
+      this.players[userId].mesh.rotation.z = player.rotation.z;
+    }
   }
 };
 

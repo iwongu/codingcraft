@@ -209,6 +209,7 @@ BaseController.prototype.setupKeys = function() {
 BaseController.prototype.makeWalk = function() {
   /*
   this.game.on('tick', angular.bind(this, function() {
+    var target = this.game.controls.target();
     walk.render(target.playerSkin);
     var vx = Math.abs(target.velocity.x);
     var vz = Math.abs(target.velocity.z);
