@@ -8,6 +8,10 @@ var voxel = require('voxel')
 var walk = require('voxel-walk')
 
 
+// it seems the best way to change gravity.
+createGame.prototype.gravity = [0, -0.000008, 0];
+
+
 var BaseController = function(scope, http, window) {
   window.game = this; // for debugging
 
@@ -207,7 +211,6 @@ BaseController.prototype.setupKeys = function() {
 };
 
 BaseController.prototype.makeWalk = function() {
-  /*
   this.game.on('tick', angular.bind(this, function() {
     var target = this.game.controls.target();
     walk.render(target.playerSkin);
@@ -216,7 +219,6 @@ BaseController.prototype.makeWalk = function() {
     if (vx > 0.001 || vz > 0.001) walk.stopWalking();
     else walk.startWalking();
   }));
-  */
 };
 
 BaseController.prototype.setupCover = function() {

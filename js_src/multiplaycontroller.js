@@ -4,7 +4,6 @@ var BaseController = require('./basecontroller');
 var inherits = require('inherits')
 var skin = require('minecraft-skin')
 
-
 var MultiplayController = function($scope, $http, $window) {
   BaseController.call(this, $scope, $http, $window);
 
@@ -17,6 +16,8 @@ var MultiplayController = function($scope, $http, $window) {
   this.setup();
 
   this.players = {};
+
+  this.pingCount = 0;
 
   this.loadMap();
   this.loadCodes();
@@ -60,6 +61,8 @@ MultiplayController.prototype.setup = function() {
   this.setupKeys();
   this.makeWalk();
   this.setupCover();
+  this.setupMoves();
+  //this.setupPing();
 
   this.game.on('fire', angular.bind(this, function (target, state) {
     var blocks = [];
@@ -80,8 +83,8 @@ MultiplayController.prototype.setup = function() {
       blocks: blocks,
       player: {
         position: this.avatar.position,
-        velocity: this.avatar.velocity,
-        rotation: this.avatar.rotation
+        rotation: this.avatar.rotation,
+        velocity: this.avatar.velocity
       }
     };
     var params = $.param({
@@ -123,8 +126,47 @@ MultiplayController.prototype.onMessage = function(message) {
       this.players[userId].mesh.rotation.x = player.rotation.x;
       this.players[userId].mesh.rotation.y = player.rotation.y;
       this.players[userId].mesh.rotation.z = player.rotation.z;
+
+      // _velocity is custom attribute.
+      this.players[userId]._velocity = player.velocity;
     }
   }
+};
+
+MultiplayController.prototype.setupMoves = function() {
+  this.game.on('tick', angular.bind(this, function() {
+    for (var userId in this.players) {
+      var player = this.players[userId];
+      player.mesh.position.x += player._velocity.x;
+      player.mesh.position.y += player._velocity.y;
+      player.mesh.position.z += player._velocity.z;
+    }
+  }));
+};
+
+MultiplayController.prototype.setupPing = function() {
+  this.game.on('tick', angular.bind(this, function() {
+    this.pingCount += 1;
+    if (this.pingCount % 10 != 0) {
+      return;
+    }
+    var message = {
+      player: {
+        position: this.avatar.position,
+        rotation: this.avatar.rotation,
+        velocity: this.avatar.velocity
+      }
+    };
+    var params = $.param({
+      'token': this.initdata.token,
+      'message': angular.toJson(message)
+    });
+    this.http.post('/_/send_message/', params).
+      success(angular.bind(this, function(data) {
+      })).
+      error(angular.bind(this, function() {
+      }));
+  }));
 };
 
 MultiplayController.prototype.onError = function(error) {  
