@@ -17,7 +17,7 @@ var MultiplayController = function($scope, $http, $window) {
 
   this.players = {};
 
-  this.pingCount = 0;
+  this.prevPosition = {x: 0, y: 0, z: 0};
 
   this.loadMap();
   this.loadCodes();
@@ -61,8 +61,7 @@ MultiplayController.prototype.setup = function() {
   this.setupKeys();
   this.makeWalk();
   this.setupCover();
-  this.setupMoves();
-  //this.setupPing();
+  this.setupPing();
 
   this.game.on('fire', angular.bind(this, function (target, state) {
     var blocks = [];
@@ -126,30 +125,21 @@ MultiplayController.prototype.onMessage = function(message) {
       this.players[userId].mesh.rotation.x = player.rotation.x;
       this.players[userId].mesh.rotation.y = player.rotation.y;
       this.players[userId].mesh.rotation.z = player.rotation.z;
-
-      // _velocity is custom attribute.
-      this.players[userId]._velocity = player.velocity;
     }
   }
 };
 
-MultiplayController.prototype.setupMoves = function() {
-  this.game.on('tick', angular.bind(this, function() {
-    for (var userId in this.players) {
-      var player = this.players[userId];
-      player.mesh.position.x += player._velocity.x;
-      player.mesh.position.y += player._velocity.y;
-      player.mesh.position.z += player._velocity.z;
-    }
-  }));
-};
-
 MultiplayController.prototype.setupPing = function() {
   this.game.on('tick', angular.bind(this, function() {
-    this.pingCount += 1;
-    if (this.pingCount % 10 != 0) {
+    if (Math.abs(this.avatar.position.x - this.prevPosition.x) +
+        Math.abs(this.avatar.position.y - this.prevPosition.y) +
+        Math.abs(this.avatar.position.z - this.prevPosition.z) <= 1.0) {
       return;
     }
+    this.prevPosition.x = this.avatar.position.x;
+    this.prevPosition.y = this.avatar.position.y;
+    this.prevPosition.z = this.avatar.position.z;
+
     var message = {
       player: {
         position: this.avatar.position,
