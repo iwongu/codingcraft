@@ -55,10 +55,8 @@ MultiplayController.prototype.loadMap = function() {
 };
 
 MultiplayController.prototype.setup = function() {  
-  this.makeFly();
   this.setupHighlight();
   this.setupKeys();
-  this.makeWalk();
   this.setupCover();
   this.setupPing();
 

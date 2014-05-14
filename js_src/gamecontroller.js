@@ -69,10 +69,8 @@ GameController.prototype.loadMap = function() {
 };
 
 GameController.prototype.setup = function() {  
-  this.makeFly();
   this.setupHighlight();
   this.setupKeys();
-  this.makeWalk();
   this.setupCover();
 
   this.game.on('fire', angular.bind(this, function (target, state) {

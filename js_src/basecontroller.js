@@ -113,6 +113,9 @@ BaseController.prototype.setPlayer = function() {
   this.avatar.position.set(this.getRandomInt(0, 20) - 10,
                            1,
                            this.getRandomInt(0, 20) - 10);
+
+  this.makeFly();
+  this.makeWalk();
 };
 
 BaseController.prototype.getRandomInt = function(min, max) {
