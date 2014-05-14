@@ -8,10 +8,8 @@ var MultiplayController = function($scope, $http, $window) {
   BaseController.call(this, $scope, $http, $window);
 
   this.initdata = $window.MC_initdata;
-  this.initdata.socket.onopen = angular.bind(this, this.onOpen);
-  this.initdata.socket.onmessage = angular.bind(this, this.onMessage);
-  this.initdata.socket.onerror = angular.bind(this, this.onError);
-  this.initdata.socket.onclose = angular.bind(this, this.onClose);
+  this.socket = null;
+  this.openSocket();
 
   this.players = {};
 
@@ -22,6 +20,14 @@ var MultiplayController = function($scope, $http, $window) {
   this.setup();
 };
 inherits(MultiplayController, BaseController)
+
+MultiplayController.prototype.openSocket = function() {
+  this.socket = this.initdata.channel.open();
+  this.socket.onopen = angular.bind(this, this.onOpen);
+  this.socket.onmessage = angular.bind(this, this.onMessage);
+  this.socket.onerror = angular.bind(this, this.onError);
+  this.socket.onclose = angular.bind(this, this.onClose);
+};
 
 /*
 MultiplayController.prototype.runCode = function(current) {
@@ -58,7 +64,6 @@ MultiplayController.prototype.setup = function() {
   this.setupHighlight();
   this.setupKeys();
   this.setupCover();
-  this.setupPing();
 
   this.game.on('fire', angular.bind(this, function (target, state) {
     var blocks = [];
@@ -97,6 +102,7 @@ MultiplayController.prototype.setup = function() {
 };
 
 MultiplayController.prototype.onOpen = function() {  
+  this.setupPing();
 };
 
 MultiplayController.prototype.onMessage = function(message) {  
@@ -161,9 +167,12 @@ MultiplayController.prototype.setupPing = function() {
 };
 
 MultiplayController.prototype.onError = function(error) {  
+  this.window.console.log('onError: ' + error);
 };
 
 MultiplayController.prototype.onClose = function() {  
+  this.window.console.log('onClose');
+  this.openSocket();
 };
 
 module.exports = MultiplayController;

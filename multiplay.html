@@ -35,13 +35,11 @@
 
     <script type="text/javascript" src="/_ah/channel/jsapi"></script>
     <script type="text/javascript">
-      var channel = new goog.appengine.Channel('{{channel_token}}');
-      var socket = channel.open();
       window.MC_initdata = {
         key: '{{key}}',
         token: '{{channel_token}}',
         user_id: '{{user_id}}',
-        socket: socket
+        channel: new goog.appengine.Channel('{{channel_token}}')
       };
     </script>
     <script src="js/multiplay_bundle.js"></script>
