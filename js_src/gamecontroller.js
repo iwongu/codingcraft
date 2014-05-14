@@ -5,13 +5,20 @@ var GameApi = require('./gameapi');
 var inherits = require('inherits')
 
 
-var GameController = function($scope, $http, $window) {
-  BaseController.call(this, $scope, $http, $window);
+var GameController = function($scope, $http, $window, $timeout, topbar) {
+  BaseController.call(this, $scope, $http, $window, $timeout, topbar);
 
   this.currentCode = 0;
+  this.autoSavePromise = null;
+  this.dirty = false;
 
   this.loadUser();
-  this.loadMap();
+  this.loadMap().
+    success(angular.bind(this, function(data) {
+      this.setupAutoSave();
+    })).
+    error(angular.bind(this, function() {
+    }));
   this.setup();
 };
 inherits(GameController, BaseController)
@@ -56,7 +63,7 @@ GameController.prototype.resetMap = function() {
 };
 
 GameController.prototype.loadMap = function() {
-  this.http.post('/_/load_map/').
+  return this.http.post('/_/load_map/').
     success(angular.bind(this, function(data) {
       if (data.result != 'ok') {
         return;
@@ -83,6 +90,44 @@ GameController.prototype.setup = function() {
       if (position) this.game.setBlock(position, 0);
     }
   }));
+};
+
+GameController.prototype.setupAutoSave = function() {  
+  this.game.on('setBlock', angular.bind(this, function (pos, val, old) {
+    this.dirty = true;
+    if (this.autoSavePromise) {
+      this.timeout.cancel(this.autoSavePromise);
+    }
+    this.autoSavePromise = this.timeout(angular.bind(this, function() {
+      this.autoSaveMap();
+    }), 10 *1000);
+  }));
+
+  this.window.onbeforeunload = angular.bind(this, function(event) {
+    if (this.dirty) {
+      this.saveMap();
+      return 'You have unsaved changes. It will be auto-saved in a few seconds. Are you sure you want to leave this page now?';
+    }
+  });
+
+  this.window.onunload = angular.bind(this, function(event) {
+    if (this.dirty) {
+      this.saveMap();
+    }
+  });
+};
+
+
+GameController.prototype.autoSaveMap = function() {
+  this.topbar.show_message("Auto saving...");
+  this.dirty = false;
+  this.saveMap().
+    success(angular.bind(this, function(data) {
+      this.topbar.hide_message();
+    })).
+    error(angular.bind(this, function() {
+      this.topbar.show_error("Auto saving failed...");
+    }));
 };
 
 

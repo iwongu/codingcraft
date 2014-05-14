@@ -4,8 +4,8 @@ var BaseController = require('./basecontroller');
 var inherits = require('inherits')
 var skin = require('minecraft-skin')
 
-var MultiplayController = function($scope, $http, $window) {
-  BaseController.call(this, $scope, $http, $window);
+var MultiplayController = function($scope, $http, $window, $timeout, topbar) {
+  BaseController.call(this, $scope, $http, $window, $timeout, topbar);
 
   this.initdata = $window.MC_initdata;
   this.socket = null;
@@ -149,7 +149,7 @@ MultiplayController.prototype.onMessage = function(message) {
         this.players[userId] =
           skin(this.game.THREE, 'images/' + player.skin + '.png',
                angular.copy(this.skinOpts));
-        this.game.scene.add(this.players[userId].mesh);
+        this.game.addItem(this.players[userId]);
       }
       this.players[userId].mesh.position.x = player.position.x;
       this.players[userId].mesh.position.y = player.position.y;

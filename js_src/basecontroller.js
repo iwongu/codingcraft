@@ -12,12 +12,14 @@ var walk = require('voxel-walk')
 createGame.prototype.gravity = [0, -0.000008, 0];
 
 
-var BaseController = function(scope, http, window) {
+var BaseController = function(scope, http, window, timeout, topbar) {
   window.game = this; // for debugging
 
   this.scope = scope;
   this.http = http;
   this.window = window;
+  this.topbar = topbar;
+  this.timeout = timeout;
 
   var containerEl = window.document.getElementById('container');
 
@@ -153,11 +155,7 @@ BaseController.prototype.getMapData = function() {
 
 BaseController.prototype.saveMap = function() {
   var params = $.param({'data': this.getMapData()});
-  return this.http.post('/_/save_map/', params).
-    success(angular.bind(this, function(data) {
-    })).
-    error(angular.bind(this, function() {
-    }));
+  return this.http.post('/_/save_map/', params);
 };
 
 BaseController.prototype.drawMap = function(data) {
