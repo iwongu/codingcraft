@@ -1,0 +1,35 @@
+<!doctype html>
+{% autoescape true %}
+<html ng-app="uc">
+  <head>
+    <title>User - Codingcraft</title>
+    <meta charset="utf-8">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+  </head>
+  <body ng-controller="UserController as user">
+    <div class="field">
+      <span class="name">Name: </span>
+      <span class="value"><input type="text" ng-model="user.name"></span>
+    </div>
+    <div class="field">
+      <span class="name">Avatar: </span>
+      <span class="value">
+        <select ng-model="user.avatar">
+          {% for key, value in avatars.iteritems() %}
+          <option value="{{key}}">{{value}}</option>
+          {% endfor %}
+        </select>
+      </span>
+    </div>
+    <span class="button-container">
+      <button class="button primary" ng-click="user.save()">Save</button>
+    </span>
+    <script src="js/user_bundle.js"></script>
+  </body>
+</html>
+{% endautoescape %}
+

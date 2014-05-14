@@ -81,9 +81,7 @@ var BaseController = function(scope, http, window) {
     scale: new this.game.THREE.Vector3(0.04, 0.04, 0.04)
   };
 
-  this.avatar = this.createPlayer('images/player.png', this.skinOpts);
-  this.avatar.possess();
-  this.avatar.position.set(0, 1, 0);
+  this.avatar = null;
 
   this.mapKey = null;
 
@@ -93,19 +91,42 @@ var BaseController = function(scope, http, window) {
   this.blockPosPlace = null;
   this.blockPosErase = null;
 
+  this.name = null;
+  this.skin = null;
+
   this.codeCount = 5;
   this.codes = [];
   for (var i = 0; i < this.codeCount; i++) {
     this.codes[i] = '';
   }
+
+  this.loadUser().
+    success(angular.bind(this, function() {
+      this.setPlayer();
+    }));
 };
 
-BaseController.prototype.loadCodes = function() {
-  this.http.post('/_/load_codes/').
+BaseController.prototype.setPlayer = function() {
+  this.avatar = this.createPlayer('images/' + this.skin + '.png',
+                                  angular.copy(this.skinOpts));
+  this.avatar.possess();
+  this.avatar.position.set(this.getRandomInt(0, 20) - 10,
+                           1,
+                           this.getRandomInt(0, 20) - 10);
+};
+
+BaseController.prototype.getRandomInt = function(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+BaseController.prototype.loadUser = function() {
+  return this.http.post('/_/get_user/').
     success(angular.bind(this, function(data) {
       if (data.result != 'ok') {
         return;
       }
+      this.name = data.name;
+      this.skin = data.avatar;
       for (var i = 0; i < this.codeCount; i++) {
         this.codes[i] = data.codes[i] || '';
       }
@@ -180,12 +201,10 @@ BaseController.prototype.setupHighlight = function() {
 
 BaseController.prototype.setupKeys = function() {
   window.addEventListener('keydown', angular.bind(this, function (ev) {
-    /*
     if (ev.keyCode === 'R'.charCodeAt(0)) {
       // toggle between first and third person modes
       this.avatar.toggle();
     }
-    */
 
     var codeOffset = '1'.charCodeAt(0);
     for (var i = 0; i < this.codeCount; i++) {

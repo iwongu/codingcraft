@@ -14,4 +14,5 @@ class Map(ndb.Model):
 class User(ndb.Model):
     user = ndb.UserProperty()
     name = ndb.StringProperty()
+    avatar = ndb.StringProperty()
     codes = ndb.TextProperty(repeated=True)

@@ -7,6 +7,64 @@ import json
 import webapp2
 
 
+class GetUser(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        result = data.User.query(data.User.user == user).fetch()
+
+        if len(result) == 0:
+            response = {'result': 'not_found' }
+            self.response.write(json.dumps(response))
+            return
+
+        currentUser = result[0]
+
+        response = {
+            'result': 'ok',
+            'key': currentUser.key.id(),
+            'name': currentUser.name,
+            'avatar': currentUser.avatar,
+            'codes': currentUser.codes }
+        self.response.write(json.dumps(response));
+
+
+class SetUser(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        result = data.User.query(data.User.user == user).fetch()
+        currentUser = None
+        if len(result) > 0:
+            currentUser = result[0]
+        if currentUser is None:
+            currentUser = data.User()
+            currentUser.user = user
+
+        currentUser.name = self.request.get('name')
+        currentUser.avatar = self.request.get('avatar')
+        key = currentUser.put()
+
+        response = {'result': 'ok', 'key': key.id() }
+        self.response.write(json.dumps(response))
+
+
+class SaveCodes(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        result = data.User.query(data.User.user == user).fetch()
+        currentUser = None
+        if len(result) > 0:
+            currentUser = result[0]
+        if currentUser is None:
+            currentUser = data.User()
+            currentUser.user = user
+
+        currentUser.codes = self.request.get_all('codes[]')
+        key = currentUser.put()
+
+        response = {'result': 'ok', 'key': key.id() }
+        self.response.write(json.dumps(response))
+
+
 class SaveMap(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
@@ -60,43 +118,6 @@ class LoadMapById(webapp2.RequestHandler):
         self.response.write(json.dumps(response));
 
 
-class SaveCodes(webapp2.RequestHandler):
-    def post(self):
-        user = users.get_current_user()
-        result = data.User.query(data.User.user == user).fetch()
-        currentUser = None
-        if len(result) > 0:
-            currentUser = result[0]
-        if currentUser is None:
-            currentUser = data.User()
-            currentUser.user = user
-
-        currentUser.codes = self.request.get_all('codes[]')
-        key = currentUser.put()
-
-        response = {'result': 'ok', 'key': key.id() }
-        self.response.write(json.dumps(response))
-
-
-class LoadCodes(webapp2.RequestHandler):
-    def post(self):
-        user = users.get_current_user()
-        result = data.User.query(data.User.user == user).fetch()
-
-        if len(result) == 0:
-            response = {'result': 'not_found' }
-            self.response.write(json.dumps(response))
-            return
-
-        currentUser = result[0]
-
-        response = {
-            'result': 'ok',
-            'key': currentUser.key.id(),
-            'codes': currentUser.codes }
-        self.response.write(json.dumps(response));
-
-
 class SendMessage(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
@@ -109,10 +130,11 @@ class SendMessage(webapp2.RequestHandler):
 
 
 application = webapp2.WSGIApplication([
+        ('/_/get_user/', GetUser),
+        ('/_/set_user/', SetUser),
+        ('/_/save_codes/', SaveCodes),
         ('/_/save_map/', SaveMap),
         ('/_/load_map/', LoadMap),
         ('/_/load_map_by_id/', LoadMapById),
-        ('/_/save_codes/', SaveCodes),
-        ('/_/load_codes/', LoadCodes),
         ('/_/send_message/', SendMessage),
     ], debug=True)

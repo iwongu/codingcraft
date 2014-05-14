@@ -13,14 +13,13 @@ var MultiplayController = function($scope, $http, $window) {
   this.initdata.socket.onerror = angular.bind(this, this.onError);
   this.initdata.socket.onclose = angular.bind(this, this.onClose);
 
-  this.setup();
-
   this.players = {};
 
   this.prevPosition = {x: 0, y: 0, z: 0};
 
   this.loadMap();
-  this.loadCodes();
+
+  this.setup();
 };
 inherits(MultiplayController, BaseController)
 
@@ -81,6 +80,7 @@ MultiplayController.prototype.setup = function() {
     var message = {
       blocks: blocks,
       player: {
+        skin: this.skin,
         position: this.avatar.position,
         rotation: this.avatar.rotation,
         velocity: this.avatar.velocity
@@ -115,7 +115,9 @@ MultiplayController.prototype.onMessage = function(message) {
   if (player) {
     if (userId != this.initdata.user_id) {
       if (!this.players[userId]) {
-        this.players[userId] = skin(this.game.THREE, 'images/player.png', this.skinOpts);
+        this.players[userId] =
+          skin(this.game.THREE, 'images/' + player.skin + '.png',
+               angular.copy(this.skinOpts));
         this.game.scene.add(this.players[userId].mesh);
       }
       this.players[userId].mesh.position.x = player.position.x;
@@ -133,7 +135,7 @@ MultiplayController.prototype.setupPing = function() {
   this.game.on('tick', angular.bind(this, function() {
     if (Math.abs(this.avatar.position.x - this.prevPosition.x) +
         Math.abs(this.avatar.position.y - this.prevPosition.y) +
-        Math.abs(this.avatar.position.z - this.prevPosition.z) <= 1.0) {
+        Math.abs(this.avatar.position.z - this.prevPosition.z) <= 0.5) {
       return;
     }
     this.prevPosition.x = this.avatar.position.x;
@@ -142,6 +144,7 @@ MultiplayController.prototype.setupPing = function() {
 
     var message = {
       player: {
+        skin: this.skin,
         position: this.avatar.position,
         rotation: this.avatar.rotation,
         velocity: this.avatar.velocity

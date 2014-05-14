@@ -26,6 +26,26 @@ class MainPage(webapp2.RequestHandler):
         self.response.write(template.render(template_values))
 
 
+class UserPage(webapp2.RequestHandler):
+    def get(self):
+        avatars = {
+            'player': 'Max',
+            'viking': 'Viking',
+            'steve': 'Steve',
+            'steve_girl': 'Steve - girl',
+            'steve_adventurer': 'Steve - adventurer',
+            'steve_suit': 'Steve - suit',
+            'diamond_armor_steve': 'Steve - diamond armor'
+            }
+        user = users.get_current_user()
+        template_values = {
+            'username': user.nickname(),
+            'avatars': avatars
+            }
+        template = JINJA_ENVIRONMENT.get_template('user.html')
+        self.response.write(template.render(template_values))
+
+
 class MultiplayPage(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
@@ -55,5 +75,6 @@ class MultiplayPage(webapp2.RequestHandler):
 
 application = webapp2.WSGIApplication([
     ('/', MainPage),
+    ('/user', UserPage),
     ('/start', MultiplayPage),
 ], debug=True)

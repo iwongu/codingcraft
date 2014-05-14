@@ -8,12 +8,11 @@ var inherits = require('inherits')
 var GameController = function($scope, $http, $window) {
   BaseController.call(this, $scope, $http, $window);
 
-  this.setup();
-
   this.currentCode = 0;
 
   this.loadMap();
-  this.loadCodes();
+
+  this.setup();
 };
 inherits(GameController, BaseController)
 
