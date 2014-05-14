@@ -10,8 +10,8 @@ var GameController = function($scope, $http, $window) {
 
   this.currentCode = 0;
 
+  this.loadUser();
   this.loadMap();
-
   this.setup();
 };
 inherits(GameController, BaseController)

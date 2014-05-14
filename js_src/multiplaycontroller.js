@@ -13,10 +13,18 @@ var MultiplayController = function($scope, $http, $window) {
 
   this.players = {};
 
-  this.prevPosition = {x: 0, y: 0, z: 0};
+  this.prevPosition = {x: 0.0, y: 0.0, z: 0.0};
+  this.prevRotation = {x: 0.0, y: 0.0, z: 0.0};
 
+  this.freezed = true;
+
+  this.loadUser().
+    success(angular.bind(this, function() {
+      if (this.userId == this.initdata.map_owner_id) {
+        this.freezed = false;
+      }
+    }));
   this.loadMap();
-
   this.setup();
 };
 inherits(MultiplayController, BaseController)
@@ -66,6 +74,10 @@ MultiplayController.prototype.setup = function() {
   this.setupCover();
 
   this.game.on('fire', angular.bind(this, function (target, state) {
+    if (this.freezed) {
+      return;
+    }
+
     var blocks = [];
     var position = this.blockPosPlace;
     if (position) {
@@ -82,23 +94,36 @@ MultiplayController.prototype.setup = function() {
 
     var message = {
       blocks: blocks,
-      player: {
-        skin: this.skin,
-        position: this.avatar.position,
-        rotation: this.avatar.rotation,
-        velocity: this.avatar.velocity
-      }
     };
-    var params = $.param({
-      'token': this.initdata.token,
-      'message': angular.toJson(message)
-    });
-    this.http.post('/_/send_message/', params).
+    this.sendMessage(message);
+  }));
+};
+
+MultiplayController.prototype.sendMessage = function(message) {  
+  var params = $.param({
+    'token': this.initdata.token,
+    'message': angular.toJson(message)
+  });
+  return this.http.post('/_/send_message/', params);
+};
+
+MultiplayController.prototype.saveAndSyncMap = function() {  
+  this.saveMap().
       success(angular.bind(this, function(data) {
+        var message = {
+          resync: true
+        };
+        this.sendMessage(message);
       })).
       error(angular.bind(this, function() {
       }));
-  }));
+};
+
+MultiplayController.prototype.freezePlayers = function(freezed) {  
+  var message = {
+    freezed: freezed
+  };
+  this.sendMessage(message);
 };
 
 MultiplayController.prototype.onOpen = function() {  
@@ -111,13 +136,15 @@ MultiplayController.prototype.onMessage = function(message) {
   var message = angular.fromJson(data.message);
   var blocks = message.blocks;
   var player = message.player;
+  var freezed = message.freezed;
+  var resync = message.resync;
   if (blocks) {
     for (var i = 0; i < blocks.length; i++) {
       this.game.setBlock(blocks[i].position, blocks[i].material);
     }
   }
-  if (player) {
-    if (userId != this.initdata.user_id) {
+  if (userId != this.initdata.user_id) {
+    if (player) {
       if (!this.players[userId]) {
         this.players[userId] =
           skin(this.game.THREE, 'images/' + player.skin + '.png',
@@ -132,19 +159,34 @@ MultiplayController.prototype.onMessage = function(message) {
       this.players[userId].mesh.rotation.y = player.rotation.y;
       this.players[userId].mesh.rotation.z = player.rotation.z;
     }
+    if (typeof freezed == 'boolean') {
+      this.freezed = freezed;
+      this.scope.$apply();
+    }
+    if (typeof resync == 'boolean' && resync) {
+      this.loadMap();
+    }
   }
 };
 
 MultiplayController.prototype.setupPing = function() {
   this.game.on('tick', angular.bind(this, function() {
-    if (Math.abs(this.avatar.position.x - this.prevPosition.x) +
-        Math.abs(this.avatar.position.y - this.prevPosition.y) +
-        Math.abs(this.avatar.position.z - this.prevPosition.z) <= 0.5) {
+    var isMoved =
+      Math.abs(this.avatar.position.x - this.prevPosition.x) +
+      Math.abs(this.avatar.position.y - this.prevPosition.y) +
+      Math.abs(this.avatar.position.z - this.prevPosition.z) > 0.5;
+    var isRotated =
+      Math.abs(this.avatar.rotation.y - this.prevRotation.y) > 0.3;
+    if (!isMoved && !isRotated) {
       return;
     }
     this.prevPosition.x = this.avatar.position.x;
     this.prevPosition.y = this.avatar.position.y;
     this.prevPosition.z = this.avatar.position.z;
+
+    this.prevRotation.x = this.avatar.rotation.x;
+    this.prevRotation.y = this.avatar.rotation.y;
+    this.prevRotation.z = this.avatar.rotation.z;
 
     var message = {
       player: {
@@ -154,15 +196,7 @@ MultiplayController.prototype.setupPing = function() {
         velocity: this.avatar.velocity
       }
     };
-    var params = $.param({
-      'token': this.initdata.token,
-      'message': angular.toJson(message)
-    });
-    this.http.post('/_/send_message/', params).
-      success(angular.bind(this, function(data) {
-      })).
-      error(angular.bind(this, function() {
-      }));
+    this.sendMessage(message);
   }));
 };
 

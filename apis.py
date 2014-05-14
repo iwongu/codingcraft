@@ -21,7 +21,7 @@ class GetUser(webapp2.RequestHandler):
 
         response = {
             'result': 'ok',
-            'key': currentUser.key.id(),
+            'user_id': currentUser.user.user_id(),
             'name': currentUser.name,
             'avatar': currentUser.avatar,
             'codes': currentUser.codes }

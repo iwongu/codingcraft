@@ -66,8 +66,10 @@ class MultiplayPage(webapp2.RequestHandler):
         template_values = {
             'username': user.nickname(),
             'user_id': user.user_id(),
+            'map_owner_id': result.owner.user_id(),
             'key': key,
-            'channel_token': token
+            'channel_token': token,
+            'is_owner': result.owner == user
             }
         template = JINJA_ENVIRONMENT.get_template('multiplay.html')
         self.response.write(template.render(template_values))

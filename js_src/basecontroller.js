@@ -91,6 +91,7 @@ var BaseController = function(scope, http, window) {
   this.blockPosPlace = null;
   this.blockPosErase = null;
 
+  this.userId = null;
   this.name = null;
   this.skin = null;
 
@@ -99,11 +100,6 @@ var BaseController = function(scope, http, window) {
   for (var i = 0; i < this.codeCount; i++) {
     this.codes[i] = '';
   }
-
-  this.loadUser().
-    success(angular.bind(this, function() {
-      this.setPlayer();
-    }));
 };
 
 BaseController.prototype.setPlayer = function() {
@@ -128,20 +124,23 @@ BaseController.prototype.loadUser = function() {
       if (data.result != 'ok') {
         return;
       }
+      this.userId = data.user_id;
       this.name = data.name;
       this.skin = data.avatar;
       for (var i = 0; i < this.codeCount; i++) {
         this.codes[i] = data.codes[i] || '';
       }
+
+      this.setPlayer();
     })).
     error(angular.bind(this, function() {
     }));
 };
 
-BaseController.prototype.saveMap = function() {
+BaseController.prototype.getMapData = function() {
   var size = this.gameSize;
-  var data = '';
   var codeOffset = '0'.charCodeAt(0);
+  var data = '';
   for (var i = -size; i < size; i++) {
     for (var j = -size; j < size; j++) {
       for (var k = -size; k < size; k++) {
@@ -149,9 +148,12 @@ BaseController.prototype.saveMap = function() {
       }
     }
   }
+  return data;
+};
 
-  var params = $.param({'data': data});
-  this.http.post('/_/save_map/', params).
+BaseController.prototype.saveMap = function() {
+  var params = $.param({'data': this.getMapData()});
+  return this.http.post('/_/save_map/', params).
     success(angular.bind(this, function(data) {
     })).
     error(angular.bind(this, function() {

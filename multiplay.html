@@ -31,6 +31,32 @@
       <div id="user">
         {{username}}
       </div>
+      <div class="menu">
+        <div class="title">Status</div>
+        <div class="section">
+          {% raw %}
+          <span ng-hide="game.freezed">You are unfreezed.</span>
+          <span ng-show="game.freezed">You are freezed.</span>
+          {% endraw %}
+        </div>
+
+        {% if is_owner %}
+        <div class="title">Owner menu</div>
+        <div class="section">
+          <span class="button-container">
+            <button class="button secondary" ng-click="game.saveAndSyncMap()">Save and sync map</button>
+          </span>
+        </div>
+        <div class="section">
+          <span class="button-container">
+            <button class="button secondary" ng-click="game.freezePlayers(true)">Freeze other players</button>
+          </span>
+          <span class="button-container">
+            <button class="button secondary" ng-click="game.freezePlayers(false)">Unfreeze other players</button>
+          </span>
+        </div>
+        {% endif %}
+      </div>
     </div>
 
     <script type="text/javascript" src="/_ah/channel/jsapi"></script>
@@ -39,6 +65,7 @@
         key: '{{key}}',
         token: '{{channel_token}}',
         user_id: '{{user_id}}',
+        map_owner_id: '{{map_owner_id}}',
         channel: new goog.appengine.Channel('{{channel_token}}')
       };
     </script>
