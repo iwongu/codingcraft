@@ -11,23 +11,29 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
   </head>
   <body ng-controller="UserController as user">
-    <div class="field">
-      <span class="name">Name: </span>
-      <span class="value"><input type="text" ng-model="user.name"></span>
+    <div class="user-settings">
+      <div class="title">Codingcraft User</div>
+      <form name="settings">
+        <div class="field">
+          <span class="name">Name: </span>
+          <span class="value"><input type="text" ng-model="user.name" required></span>
+        </div>
+        <div class="field">
+          <span class="name">Avatar: </span>
+          <span class="value">
+            <select ng-model="user.avatar">
+              {% for key, value in avatars.iteritems() %}
+              <option value="{{key}}">{{value}}</option>
+              {% endfor %}
+            </select>
+          </span>
+        </div>
+        <span class="button-container">
+          <button ng-disabled="!settings.$valid || !settings.$dirty" class="button primary" ng-click="user.save()">Save</button>
+        </span>
+      </form>
     </div>
-    <div class="field">
-      <span class="name">Avatar: </span>
-      <span class="value">
-        <select ng-model="user.avatar">
-          {% for key, value in avatars.iteritems() %}
-          <option value="{{key}}">{{value}}</option>
-          {% endfor %}
-        </select>
-      </span>
-    </div>
-    <span class="button-container">
-      <button class="button primary" ng-click="user.save()">Save</button>
-    </span>
+    <aside class="topbar hide" id="topbar"></aside>
     <script src="js/user_bundle.js"></script>
   </body>
 </html>
