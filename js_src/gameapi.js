@@ -12,17 +12,21 @@ var GameApi = function(gameController) {
 GameApi.prototype.setBlock = function(x, y, z, block) {
   if (!this.isIn(x, y, z)) { return; }
   if (this.game.getBlock([x, y, z]) != 0) { return; }
+  this.setBlock_(x, y, z, block);
+};
+
+GameApi.prototype.removeBlock = function(x, y, z) {
+  if (!this.isIn(x, y, z)) { return; }
+  this.setBlock_(x, y, z, 0);
+};
+
+GameApi.prototype.setBlock_ = function(x, y, z, block) {
   this.game.setBlock([x, y, z], block);
 };
 
 GameApi.prototype.getBlock = function(x, y, z) {
   if (!this.isIn(x, y, z)) { return 0; }
   return this.game.getBlock([x, y, z]);
-};
-
-GameApi.prototype.removeBlock = function(x, y, z) {
-  if (!this.isIn(x, y, z)) { return; }
-  this.game.setBlock([x, y, z], 0);
 };
 
 GameApi.prototype.move = function(x, y, z) {

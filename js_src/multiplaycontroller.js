@@ -1,6 +1,7 @@
 'use strict'
 
 var BaseController = require('./basecontroller');
+var MultiplayGameApi = require('./multiplaygameapi');
 var inherits = require('inherits')
 var skin = require('minecraft-skin')
 
@@ -60,7 +61,7 @@ var MultiplayController = function($scope, $http, $window, $timeout, topbar) {
   this.loadMap();
   this.setup();
 };
-inherits(MultiplayController, BaseController)
+inherits(MultiplayController, BaseController);
 
 MultiplayController.prototype.openSocket = function() {
   this.socket = this.initdata.channel.open();
@@ -70,9 +71,8 @@ MultiplayController.prototype.openSocket = function() {
   this.socket.onclose = angular.bind(this, this.onClose);
 };
 
-/*
 MultiplayController.prototype.runCode = function(current) {
-  var cc = new GameApi(this);
+  var cc = new MultiplayGameApi(this);
   var str = '(function() {' +
     'var codingcraft = cc;' +
     'var BLOCK = cc.block;' +
@@ -81,11 +81,18 @@ MultiplayController.prototype.runCode = function(current) {
   try {
     eval(str);
     this.syntaxError = '';
+    
+    var blocks = cc.getBlocks();
+    if (blocks.length > 0) {
+      var message = {
+        blocks: blocks,
+      };
+      this.sendMessage(message);
+    }
   } catch (e) {
     this.syntaxError = e.message;
   }
 };
-*/
 
 MultiplayController.prototype.loadMap = function() {
   var params = $.param({'key': this.initdata.key});
