@@ -17,6 +17,39 @@ var MultiplayController = function($scope, $http, $window, $timeout, topbar) {
   this.prevRotation = {x: 0.0, y: 0.0, z: 0.0};
 
   this.freezed = true;
+  this.chats = [];
+
+  var colors = [
+    'antiquewhite',
+    'aqua',
+    'beige',
+    'blue',
+    'blueviolet',
+    'burlywood',
+    'cadetblut',
+    'chartreuse',
+    'coral',
+    'crimson',
+    'cyan',
+    'darkgoldenrod',
+    'darkolivegreen',
+    'darkorange',
+    'darkred',
+    'firebrick',
+    'gold',
+    'green',
+    'greenyellow',
+    'navy',
+    'orange',
+    'peru',
+    'powderblue',
+    'red',
+    'white',
+    'whitesmoke',
+    'yellow',
+    'yellowgreen'
+  ];
+  this.color = colors[this.getRandomInt(0, colors.length)];
 
   this.loadUser().
     success(angular.bind(this, function() {
@@ -138,10 +171,19 @@ MultiplayController.prototype.onMessage = function(message) {
   var player = message.player;
   var freezed = message.freezed;
   var resync = message.resync;
+  var chat = message.chat;
   if (blocks) {
     for (var i = 0; i < blocks.length; i++) {
       this.game.setBlock(blocks[i].position, blocks[i].material);
     }
+  }
+  if (chat) {
+    this.chats.push({
+      name: chat.name,
+      text: chat.text,
+      style: {color: chat.color}
+    });
+    this.scope.$apply();
   }
   if (userId != this.initdata.user_id) {
     if (player) {
@@ -207,6 +249,18 @@ MultiplayController.prototype.onError = function(error) {
 MultiplayController.prototype.onClose = function() {  
   this.window.console.log('onClose');
   this.openSocket();
+};
+
+MultiplayController.prototype.onEnterKey = function(ev) {
+  var text = this.window.prompt('Send message');
+  var message = {
+    chat: {
+      name: this.name,
+      text: text,
+      color: this.color
+    }
+  };
+  this.sendMessage(message);
 };
 
 module.exports = MultiplayController;

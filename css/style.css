@@ -7,7 +7,7 @@ body {
     overflow: hidden;
     font-family: 'Open Sans', sans-serif;
 }
-.cover, #container {
+#container, .cover, .hud {
     -moz-user-select: none;
     -webkit-user-select: none;
     user-select: none;
@@ -23,6 +23,13 @@ body {
     background-color: #000;
     opacity: 0.2;
 }
+.hud {
+    pointer-events: none;
+    background-color: transparent;
+    padding: 0 20px;
+    font-family: monospace;
+}
+
 .help-container {
     pointer-events: none;
     color: #fff;

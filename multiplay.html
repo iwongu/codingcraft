@@ -2,7 +2,7 @@
 {% autoescape true %}
 <html ng-app="mc">
   <head>
-    <title>Codingcraft</title>
+    <title>Codingcraft - Multiplay</title>
     <meta charset="utf-8">
     <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="css/normalize.css">
@@ -10,7 +10,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
   </head>
-  <body ng-controller="MultiplayController as game">
+  <body ng-controller="MultiplayController as game" ng-cloak>
     {% raw %}
     <div id="container">
       <div class="crosshair" ng-hide="!game.hideCover">
@@ -25,8 +25,12 @@
         </div>
       </div>
     </div>
+    <div class="hud">
+      <div ng-repeat="chat in game.chats" ng-style="chat.style">
+        {{chat.name}}: {{chat.text}}
+      </div>
+    </div>
     {% endraw %}
-
     <div class="cover" ng-hide="game.hideCover"></div>
     <div class="help-container" ng-hide="game.hideCover">
       {% include "help.html" %}

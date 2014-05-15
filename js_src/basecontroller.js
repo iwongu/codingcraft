@@ -210,15 +210,17 @@ BaseController.prototype.setupKeys = function() {
       this.avatar.toggle();
     }
     */
+    if (ev.target.tagName == 'TEXTAREA' || ev.target.tagName == 'INPUT') {
+      return;
+    }
+
     var codeOffset = '1'.charCodeAt(0);
     for (var i = 0; i < this.codeCount; i++) {
       if (ev.keyCode === codeOffset + i) {
-        if (ev.target.tagName != 'TEXTAREA' && ev.target.tagName != 'INPUT') {
-          this.runCode(i);
-        }
+        this.runCode(i);
       }
     }
-    if (ev.keyCode == 9) {
+    if (ev.keyCode == 9) { // Tab key
       if (ev.shiftKey) {
         if (this.currentMaterial == 0) {
           this.currentMaterial = this.materials.length - 1;
@@ -229,8 +231,14 @@ BaseController.prototype.setupKeys = function() {
         this.currentMaterial = (this.currentMaterial + 1) % this.materials.length;
       }
     }
+    if (ev.keyCode == 13) { // Enter key
+      this.onEnterKey(ev);
+    }
     this.scope.$apply();
   }));
+};
+
+BaseController.prototype.onEnterKey = function(ev) {
 };
 
 BaseController.prototype.makeWalk = function() {
