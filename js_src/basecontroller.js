@@ -204,15 +204,16 @@ BaseController.prototype.setupHighlight = function() {
 
 BaseController.prototype.setupKeys = function() {
   window.addEventListener('keydown', angular.bind(this, function (ev) {
+    /*
     if (ev.keyCode === 'R'.charCodeAt(0)) {
       // toggle between first and third person modes
       this.avatar.toggle();
     }
-
+    */
     var codeOffset = '1'.charCodeAt(0);
     for (var i = 0; i < this.codeCount; i++) {
       if (ev.keyCode === codeOffset + i) {
-        if (ev.altKey) {
+        if (ev.target.tagName != 'TEXTAREA' && ev.target.tagName != 'INPUT') {
           this.runCode(i);
         }
       }
