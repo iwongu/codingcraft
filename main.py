@@ -17,9 +17,20 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     autoescape=True)
 
 
+def isUserSetup(user):
+    result = data.User.query(data.User.user == user).fetch()
+    if len(result) == 0:
+        return False
+    return result[0].name != None and result[0].avatar != None
+
+
 class MainPage(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
+        if not isUserSetup(user):
+            self.redirect('/user')
+            return
+
         template_values = {
             'username': user.nickname(), }
         template = JINJA_ENVIRONMENT.get_template('index.html')
@@ -49,6 +60,10 @@ class UserPage(webapp2.RequestHandler):
 class MultiplayPage(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
+        if not isUserSetup(user):
+            self.redirect('/user')
+            return
+
         key = self.request.get('key');
         result = data.Map.get_by_id(long(key))
         if result is None:

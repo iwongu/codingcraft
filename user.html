@@ -21,7 +21,7 @@
         <div class="field">
           <span class="name">Avatar: </span>
           <span class="value">
-            <select ng-model="user.avatar">
+            <select ng-model="user.avatar" required>
               {% for key, value in avatars.iteritems() %}
               <option value="{{key}}">{{value}}</option>
               {% endfor %}
