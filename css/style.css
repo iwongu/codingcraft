@@ -68,7 +68,7 @@ ul {
 .cover.ng-hide,
 .help-container.ng-hide {
     opacity: 0;
-    -webkit-transition: opacity 1s ease-out;
+    -webkit-transition: opacity .5s ease-out;
     display: block !important;
 }
 

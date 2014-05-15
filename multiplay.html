@@ -13,7 +13,7 @@
   <body ng-controller="MultiplayController as game">
     {% raw %}
     <div id="container">
-      <div id="crosshair" ng-hide="!game.hideCover">
+      <div class="crosshair" ng-hide="!game.hideCover">
         <img src="images/crosshair.png"/>
       </div>
       <div class="blocks">
@@ -27,16 +27,20 @@
     </div>
     {% endraw %}
 
-    <div id="menu-container">
-      <div id="user">
+    <div class="cover" ng-hide="game.hideCover"></div>
+    <div class="help-container" ng-hide="game.hideCover">
+      {% include "help.html" %}
+    </div>
+    <div class="menu-container" ng-hide="game.hideCover">
+      <div class="user-container">
         {{username}}
       </div>
       <div class="menu">
         <div class="title">Status</div>
         <div class="section">
           {% raw %}
-          <span ng-hide="game.freezed">You are unfreezed.</span>
-          <span ng-show="game.freezed">You are freezed.</span>
+          <span ng-hide="game.freezed">You are unfreezed. You can add or remove blocks. But, only owner can save the changes you make.</span>
+          <span ng-show="game.freezed">You are freezed. You cannot add or remove blocks.</span>
           {% endraw %}
         </div>
 
@@ -59,6 +63,7 @@
       </div>
     </div>
 
+    <aside class="topbar hide" id="topbar"></aside>
     <script type="text/javascript" src="/_ah/channel/jsapi"></script>
     <script type="text/javascript">
       window.MC_initdata = {
