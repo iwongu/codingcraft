@@ -7,7 +7,7 @@ body {
     overflow: hidden;
     font-family: 'Open Sans', sans-serif;
 }
-#cover, #container {
+.cover, #container {
     -moz-user-select: none;
     -webkit-user-select: none;
     user-select: none;
@@ -15,13 +15,22 @@ body {
     top: 0;
     bottom: 0;
     left: 0;
-    right: 400px;
+    right: 0;
 }
-#cover {
+
+.cover {
     pointer-events: none;
-    background-color: #333;
-    opacity: 0.8;
+    background-color: #000;
+    opacity: 0.2;
+}
+.help-container {
+    pointer-events: none;
     color: #fff;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 400px;
 }
 .help {
     display: table;
@@ -39,19 +48,31 @@ ul {
     font-size: 10px;
 }
 
-#user {
+.user-container {
     position: absolute;
     right: 10px;
 }
 
-#menu-container {
+.menu-container {
+    background-color: white;
     position: fixed;
     top: 0;
     bottom: 0;
-    width: 400px;
+    width: 360px;
     right: 0;
+    margin: 10px 20px 0;
+    border-radius: 3px 3px 0 0;
+    opacity: 1;
 }
-#crosshair {
+.menu-container.ng-hide,
+.cover.ng-hide,
+.help-container.ng-hide {
+    opacity: 0;
+    -webkit-transition: opacity 1s ease-out;
+    display: block !important;
+}
+
+.crosshair {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -123,7 +144,7 @@ ul {
 
 .section.code textarea{
     resize: none;
-    width: 355px;
+    width: 310px;
     height: 160px;
     font-family: monospace;
     font-size: 14px;

@@ -13,7 +13,7 @@
   <body ng-controller="GameController as game">
     {% raw %}
     <div id="container">
-      <div id="crosshair" ng-hide="!game.hideCover">
+      <div class="crosshair" ng-hide="!game.hideCover">
         <img src="images/crosshair.png"/>
       </div>
       <div class="blocks">
@@ -25,26 +25,14 @@
         </div>
       </div>
     </div>
-    <div id="cover" ng-hide="game.hideCover">
-      <div class="help">
-        <div class="title">Click to play!</div>
-        <div class="section">How to play.</div>
-        <ul>
-          <li>Move - W, A, S, D or arrow keys</li>
-          <li>Remove a block - Mouse click</li>
-          <li>Put a block - Ctrl+mouse click</li>
-          <li>Change the block - Tab</li>
-          <li>Jump - Space</li>
-          <li>Fly - Space Space</li>
-          <li>Go down - Shift</li>
-        </ul>
-        <div class="credits">Made by codingcraft@github using voxeljs@github</div>
-      </div>
-    </div>
+    <div class="cover" ng-hide="game.hideCover"></div>
     {% endraw %}
-    <div id="menu-container">
-      <div id="user">
-        {% raw %}{{game.mapKey}}{% endraw %} - {{username}}
+    <div class="help-container" ng-hide="game.hideCover">
+      {% include "help.html" %}
+    </div>
+    <div class="menu-container" ng-hide="game.hideCover">
+      <div class="user-container">
+        {{username}} <small>{% raw %}{{game.mapKey}}{% endraw %}</small>
       </div>
       <div class="menu">
         {% raw %}
