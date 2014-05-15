@@ -52,7 +52,7 @@ var MultiplayController = function($scope, $http, $window, $timeout, topbar) {
   ];
   this.color = colors[this.getRandomInt(0, colors.length)];
 
-  this.loadUser().
+  this.userReady = this.loadUser().
     success(angular.bind(this, function() {
       if (this.userId == this.initdata.map_owner_id) {
         this.freezed = false;
@@ -167,7 +167,25 @@ MultiplayController.prototype.freezePlayers = function(freezed) {
 };
 
 MultiplayController.prototype.onOpen = function() {  
-  this.setupPing();
+  this.userReady.
+    success(angular.bind(this, function(data) {
+      this.setupPing();
+
+      var message = {
+        player: {
+          skin: this.skin,
+          position: this.avatar.position,
+          rotation: this.avatar.rotation,
+          velocity: this.avatar.velocity
+        },
+        chat: {
+          name: this.name,
+          text: '[' + this.name + ' joined.]',
+          color: this.color
+        }
+      };
+      this.sendMessage(message);
+    }));
 };
 
 MultiplayController.prototype.onMessage = function(message) {  
