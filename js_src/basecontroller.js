@@ -1,11 +1,11 @@
 'use strict'
 
-var createGame = require('voxel-engine')
-var fly = require('voxel-fly')
-var highlight = require('voxel-highlight')
-var player = require('voxel-player')
-var voxel = require('voxel')
-var walk = require('voxel-walk')
+var createGame = require('voxel-engine');
+var fly = require('voxel-fly');
+var highlight = require('voxel-highlight');
+var player = require('voxel-player');
+var voxel = require('voxel');
+var walk = require('voxel-walk');
 
 
 // it seems the best way to change gravity.
@@ -20,6 +20,8 @@ var BaseController = function(scope, http, window, timeout, topbar) {
   this.window = window;
   this.topbar = topbar;
   this.timeout = timeout;
+
+  this.initdata = this.window.MC_initdata;
 
   var containerEl = window.document.getElementById('container');
 
@@ -142,35 +144,69 @@ BaseController.prototype.loadUser = function() {
 
 BaseController.prototype.getMapData = function() {
   var size = this.gameSize;
-  var codeOffset = '0'.charCodeAt(0);
-  var data = '';
+  var data = [];
+  var cnt = 0;
+  var material = -1;
   for (var i = -size; i < size; i++) {
     for (var j = -size; j < size; j++) {
       for (var k = -size; k < size; k++) {
-        data += String.fromCharCode(codeOffset + this.game.getBlock([i, j, k]));
+        var m = this.game.getBlock([i, j, k]);
+        if (m != material) {
+          if (cnt != 0) {
+            data.push(cnt);
+            data.push(material);
+          }
+          cnt = 1;
+          material = m;
+        } else {
+          cnt += 1;
+        }
       }
     }
   }
+  if (cnt != 0) {
+    data.push(cnt);
+    data.push(material);
+  }  
   return data;
 };
 
+BaseController.prototype.loadMap = function() {
+  var params = $.param({'key': this.initdata.key});
+  return this.http.post('/_/load_map_by_id/', params).
+    success(angular.bind(this, function(data) {
+      if (data.result != 'ok') {
+        return;
+      }
+      this.mapKey = data.key;
+      this.drawMap(angular.fromJson(data.data));
+    })).
+    error(angular.bind(this, function() {
+    }));
+};
+
 BaseController.prototype.saveMap = function() {
-  var params = $.param({'data': this.getMapData()});
+  var data = angular.toJson(this.getMapData());
+  var params = $.param({'data': data});
   return this.http.post('/_/save_map/', params);
 };
 
 BaseController.prototype.drawMap = function(data) {
   var size = this.gameSize;
-  var codeOffset = '0'.charCodeAt(0);
+  var index = 0;
+  var cnt = data[index];
+  var material = data[index+1];
+  index += 2;
   for (var i = -size; i < size; i++) {
     for (var j = -size; j < size; j++) {
       for (var k = -size; k < size; k++) {
-        var index =
-          (i + size) * (size * 2) * (size * 2) +
-          (j + size) * (size * 2) +
-          (k + size);
-        var block = data[index];
-        this.game.setBlock([i, j, k], block.charCodeAt(0) - codeOffset);
+        this.game.setBlock([i, j, k], material);
+        cnt -= 1;
+        if (cnt == 0) {
+          cnt = data[index];
+          material = data[index+1];
+          index += 2;
+        }
       }
     }
   }

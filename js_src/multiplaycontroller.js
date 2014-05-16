@@ -8,7 +8,6 @@ var skin = require('minecraft-skin')
 var MultiplayController = function($scope, $http, $window, $timeout, topbar) {
   BaseController.call(this, $scope, $http, $window, $timeout, topbar);
 
-  this.initdata = $window.MC_initdata;
   this.socket = null;
   this.openSocket();
 
@@ -92,20 +91,6 @@ MultiplayController.prototype.runCode = function(current) {
   } catch (e) {
     this.syntaxError = e.message;
   }
-};
-
-MultiplayController.prototype.loadMap = function() {
-  var params = $.param({'key': this.initdata.key});
-  this.http.post('/_/load_map_by_id/', params).
-    success(angular.bind(this, function(data) {
-      if (data.result != 'ok') {
-        return;
-      }
-      this.mapKey = data.key;
-      this.drawMap(data.data);
-    })).
-    error(angular.bind(this, function() {
-    }));
 };
 
 MultiplayController.prototype.onFire = function(position) { 
