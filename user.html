@@ -32,7 +32,7 @@
             </span>
           </div>
           <span class="button-container">
-            <button ng-disabled="!settings.$valid || !settings.$dirty" class="button primary" ng-click="user.save()">Save</button>
+            <button ng-disabled="!settings.$valid || !settings.$dirty" class="button primary" ng-click="user.saveUser()">Save</button>
           </span>
         </form>
       </div>
@@ -45,13 +45,27 @@
             <th>Name</th>
             <th>Created</th>
             <th>Updated</th>
+            <th>Actions</th>
           </tr>
           <tr ng-repeat="m in user.maps">
-            <td>{{m.name}} <a ng-href="/play?key={{m.key}}">single</a> <a ng-href="/start?key={{m.key}}">multi</a</td>
+            <td>{{m.name}}</td>
             <td>{{m.created}}</td>
             <td>{{m.updated}}</td>
+            <td>
+              <a href="javascript:;" ng-click="user.changeMapName(m.key)">change name</a>
+              <a href="javascript:;" ng-click="user.deleteMap(m.key)">delete</a>
+              <a ng-href="/play?key={{m.key}}">single</a>
+              <a ng-href="/start?key={{m.key}}">multi</a>
+            </td>
           </tr>
-          {% endraw %}
+        </table>
+        <span class="button-container">
+          <button class="button primary" ng-click="user.createMap()"
+                  ng-disabled="user.maps.length >= 3">
+            New map
+          </button>
+        </span>
+        {% endraw %}
       </div>
     </div>
     <aside class="topbar hide" id="topbar"></aside>

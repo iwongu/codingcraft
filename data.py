@@ -14,8 +14,8 @@ class Map(ndb.Model):
         return {
             'key': self.key.id(),
             'name': self.name if self.name is not None else '(no name)',
-            'created': self.created.strftime('%d %b %Y %H:%M'),
-            'updated': self.updated.strftime('%d %b %Y %H:%M'),
+            'created': self.created.strftime('%d %b %Y'),
+            'updated': self.updated.strftime('%d %b %Y'),
             }
 
 

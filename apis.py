@@ -1,5 +1,6 @@
 from google.appengine.api import channel
 from google.appengine.api import users
+from google.appengine.ext import ndb
 
 import data
 import datetime
@@ -110,7 +111,61 @@ class LoadMapById(webapp2.RequestHandler):
         response = {
             'result': 'ok',
             'key': result.key.id(),
-            'data': result.data }
+            'data': result.data
+            }
+        self.response.write(json.dumps(response));
+
+
+class SetMapName(webapp2.RequestHandler):
+    def post(self):
+        key = self.request.get('key')
+        result = data.Map.get_by_id(long(key))
+        if result is None:
+            self.error(404)
+            self.response.out.write('not_found.')
+            return
+
+        result.name = self.request.get('name')
+        key = result.put();
+        response = {
+            'result': 'ok',
+            'key': result.key.id()
+            }
+        self.response.write(json.dumps(response));
+
+
+class CreateMap(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        name = self.request.get('name')
+
+        blocks = data.Map()
+        blocks.name = name;
+        blocks.created = datetime.datetime.now()
+        blocks.updated= datetime.datetime.now()
+        blocks.owner = user
+        blocks.put()
+
+        response = {
+            'result': 'ok',
+            'map': blocks.serialize()
+            }
+        self.response.write(json.dumps(response));
+
+
+class DeleteMap(webapp2.RequestHandler):
+    def post(self):
+        key = self.request.get('key')
+        result = data.Map.get_by_id(long(key))
+        if result is None:
+            self.error(404)
+            self.response.out.write('not_found.')
+            return
+
+        ndb.Key(data.Map, long(key)).delete()
+        response = {
+            'result': 'ok',
+            }
         self.response.write(json.dumps(response));
 
 
@@ -132,5 +187,8 @@ application = webapp2.WSGIApplication([
         ('/_/save_map/', SaveMap),
         ('/_/get_maps/', GetMaps),
         ('/_/load_map_by_id/', LoadMapById),
+        ('/_/set_map_name/', SetMapName),
+        ('/_/create_map/', CreateMap),
+        ('/_/delete_map/', DeleteMap),
         ('/_/send_message/', SendMessage),
     ], debug=True)

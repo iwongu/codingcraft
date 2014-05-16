@@ -20,6 +20,9 @@ body {
 .user-settings td {
     padding-right: 20px;
 }
+.user-settings table {
+    margin-bottom: 20px;
+}
 
 .field {
     margin-bottom: 20px;
