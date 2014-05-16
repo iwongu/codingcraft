@@ -29,6 +29,17 @@ GameApi.prototype.getBlock = function(x, y, z) {
   return this.game.getBlock([x, y, z]);
 };
 
+GameApi.prototype.getCurrentBlock = function() {
+  return this.gameController.currentMaterial + 1;
+};
+
+GameApi.prototype.getNormalVector = function() {
+  var cp = this.game.cameraPosition();
+  var cv = this.game.cameraVector();
+  var hit = this.game.raycastVoxels(cp, cv, 10);
+  return {x: hit.normal[0], y: hit.normal[1], z: hit.normal[2]};
+};
+
 GameApi.prototype.move = function(x, y, z) {
   if (!this.isIn(x, y, z)) { return; }
   this.gameController.avatar.move(x, y, z);
