@@ -55,29 +55,14 @@
           <div>
             <button class="button primary" ng-click="game.saveCodes()">Save codes</button>
           </div>
-          <span>Target position: </span>
-          <span ng-show="game.blockPosPlace == null && game.blockPosErase == null">Not available</span>
-          <span ng-hide="game.blockPosPlace != null">{{game.blockPosErase}}</span>
-          <span ng-show="game.blockPosPlace != null">{{game.blockPosPlace}}</span>
         </div>
         <div class="section">
           <div class="title">Menu</div>
           <div>
-            <!--
-            <span class="button-container">
-              <button class="button primary" ng-click="game.saveMap()">Save map</button>
-            </span>
-            -->
             <span class="button-container">
               <button class="button secondary" ng-click="game.resetMap()">Reset map</button>
             </span>
-            <!--
-            <span class="button-container">
-              <button class="button secondary" ng-click="game.startMultiplay()">Start multiplay</button>
-            </span>
-            -->
           </div>
-          <div>We're supporting only one map. It will be more than one soon.</div>
         </div>
         {% endraw %}
 
