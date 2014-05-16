@@ -25,7 +25,7 @@ var BaseController = function(scope, http, window, timeout, topbar) {
 
   var containerEl = window.document.getElementById('container');
 
-  this.gameSize = 30;
+  this.gameSize = {x:50, y:30, z:50};
   this.materials = [
     ['grass', 'dirt', 'grass_dirt'],
     'brick',
@@ -61,7 +61,7 @@ var BaseController = function(scope, http, window, timeout, topbar) {
   var opts = {
     generate: angular.bind(this, function(i,j,k) {
       if (j > 0) { return 0; }
-      if ((i*i + j*j + k*k) < this.gameSize*this.gameSize) {
+      if ((i*i + j*j + k*k) < this.gameSize.x*this.gameSize.z) {
         return j == 0 ? 1 : 3;
       }
       return 0;
@@ -107,6 +107,12 @@ var BaseController = function(scope, http, window, timeout, topbar) {
   }
 };
 
+BaseController.prototype.isInGame = function(x, y, z) {
+  return Math.abs(x) <= this.gameSize.x &&
+      Math.abs(y) <= this.gameSize.y &&
+      Math.abs(z) <= this.gameSize.z;
+};
+
 BaseController.prototype.setPlayer = function() {
   this.avatar = this.createPlayer('images/' + this.skin + '.png',
                                   angular.copy(this.skinOpts));
@@ -142,39 +148,48 @@ BaseController.prototype.loadUser = function() {
     }));
 };
 
-BaseController.prototype.getMapData = function() {
-  var size = this.gameSize;
-  var data = [];
-  var cnt = 0;
-  var material = -1;
-  for (var i = -size; i < size; i++) {
-    for (var j = -size; j < size; j++) {
-      for (var k = -size; k < size; k++) {
-        var m = this.game.getBlock([i, j, k]);
-        if (m != material) {
-          if (cnt != 0) {
-            data.push(cnt);
-            data.push(material);
-          }
-          cnt = 1;
-          material = m;
-        } else {
-          cnt += 1;
-        }
+BaseController.prototype.iterBlocks = function(callback) {
+  for (var i = -this.gameSize.x; i < this.gameSize.x; i++) {
+    for (var j = -this.gameSize.y; j < this.gameSize.y; j++) {
+      for (var k = -this.gameSize.z; k < this.gameSize.z; k++) {
+        callback(i, j, k);
       }
     }
   }
-  if (cnt != 0) {
-    data.push(cnt);
-    data.push(material);
+};
+
+BaseController.prototype.getMapData = function() {
+  var data = {
+    data: [],
+    cnt: 0,
+    material: -1
+  };
+  this.iterBlocks(angular.bind(this, function(data, i, j, k) {
+    var m = this.game.getBlock([i, j, k]);
+    if (m != data.material) {
+      if (data.cnt != 0) {
+        data.data.push(data.cnt);
+        data.data.push(data.material);
+      }
+      data.cnt = 1;
+      data.material = m;
+    } else {
+      data.cnt += 1;
+    }
+  }, data));
+  if (data.cnt != 0) {
+    data.data.push(data.cnt);
+    data.data.push(data.material);
   }  
-  return data;
+  return data.data;
 };
 
 BaseController.prototype.loadMap = function() {
+  this.topbar.show_message('loading map...');
   var params = $.param({'key': this.initdata.key});
   return this.http.post('/_/load_map_by_id/', params).
     success(angular.bind(this, function(data) {
+      this.topbar.hide_message();
       if (data.result != 'ok') {
         return;
       }
@@ -182,6 +197,7 @@ BaseController.prototype.loadMap = function() {
       this.drawMap(angular.fromJson(data.data));
     })).
     error(angular.bind(this, function() {
+      this.topbar.show_error("map loading failed...");
     }));
 };
 
@@ -191,25 +207,34 @@ BaseController.prototype.saveMap = function() {
   return this.http.post('/_/save_map/', params);
 };
 
+BaseController.prototype.resetMap = function() {
+  this.topbar.show_message('resetting map...');
+  this.iterBlocks(angular.bind(this, function(i, j, k) {
+    this.game.setBlock([i, j, k], this.game.generate(i, j, k));
+  }));
+  this.topbar.hide_message();
+};
+
 BaseController.prototype.drawMap = function(data) {
-  var size = this.gameSize;
-  var index = 0;
-  var cnt = data[index];
-  var material = data[index+1];
-  index += 2;
-  for (var i = -size; i < size; i++) {
-    for (var j = -size; j < size; j++) {
-      for (var k = -size; k < size; k++) {
-        this.game.setBlock([i, j, k], material);
-        cnt -= 1;
-        if (cnt == 0) {
-          cnt = data[index];
-          material = data[index+1];
-          index += 2;
-        }
-      }
+  var cbdata = {
+    index: 0,
+    cnt: 0,
+    material: -1,
+    data: data
+  };
+  cbdata.cnt = cbdata.data[cbdata.index];
+  cbdata.material = cbdata.data[cbdata.index+1];
+  cbdata.index += 2;
+
+  this.iterBlocks(angular.bind(this, function(cbdata, i, j, k) {
+    this.game.setBlock([i, j, k], cbdata.material);
+    cbdata.cnt -= 1;
+    if (cbdata.cnt == 0) {
+      cbdata.cnt = cbdata.data[cbdata.index];
+      cbdata.material = cbdata.data[cbdata.index+1];
+      cbdata.index += 2;
     }
-  }
+  }, cbdata));
 };
 
 BaseController.prototype.makeFly = function() {

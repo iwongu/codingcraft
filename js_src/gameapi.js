@@ -57,9 +57,7 @@ GameApi.prototype.getTargetPosition = function() {
 };
 
 GameApi.prototype.isIn = function(x, y, z) {
-  return Math.abs(x) <= this.gameController.gameSize &&
-      Math.abs(y) <= this.gameController.gameSize &&
-      Math.abs(z) <= this.gameController.gameSize;
+  return this.gameController.isInGame(x, y, z);
 };
 
 module.exports = GameApi;
