@@ -90,12 +90,13 @@ var BaseController = function(scope, http, window, timeout, topbar) {
   this.currentMaterial = 0;
   this.hideCover = false;
 
-  this.blockPosPlace = null;
   this.blockPosErase = null;
 
   this.userId = null;
   this.name = null;
   this.skin = null;
+
+  this.highlightDistance = 8;
 
   this.codeCount = 5;
   this.codes = [];
@@ -181,23 +182,48 @@ BaseController.prototype.makeFly = function() {
   this.game.flyer = makeFly(target);
 }; 
 
+BaseController.prototype.getNormalVector = function() {
+  var cp = this.game.cameraPosition();
+  var cv = this.game.cameraVector();
+  var hit = this.game.raycastVoxels(cp, cv, this.highlightDistance);
+  return hit.normal;
+};
+
+BaseController.prototype.onEnterKey = function(ev) {
+};
+
+BaseController.prototype.makeWalk = function() {
+  this.game.on('tick', angular.bind(this, function() {
+    var target = this.game.controls.target();
+    walk.render(target.playerSkin);
+    var vx = Math.abs(target.velocity.x);
+    var vz = Math.abs(target.velocity.z);
+    if (vx > 0.001 || vz > 0.001) walk.stopWalking();
+    else walk.startWalking();
+  }));
+};
+
+BaseController.prototype.setup = function() {  
+  this.setupHighlight();
+  this.setupKeys();
+  this.setupCover();
+  this.setupFire();
+};
+
 BaseController.prototype.setupHighlight = function() {
   // highlight blocks when you look at them, hold <Ctrl> for block placement
-  var hl = this.game.highlighter = highlight(this.game, {color: 0xff0000, distance: 8});
-  hl.on('highlight', angular.bind(this, function (voxelPos) {
+  var hl = this.game.highlighter = highlight(this.game, {
+    color: 0xff0000,
+    distance: this.highlightDistance,
+    wireframeLinewidth: 1,
+    adjacentActive: function() {}
+  });
+  hl.on('highlight', angular.bind(this, function (hl, voxelPos) {
     this.blockPosErase = voxelPos;
     this.scope.$apply();
-  }));
+  }, hl));
   hl.on('remove', angular.bind(this, function (voxelPos) {
     this.blockPosErase = null;
-    this.scope.$apply();
-  }));
-  hl.on('highlight-adjacent', angular.bind(this, function (voxelPos) {
-    this.blockPosPlace = voxelPos;
-    this.scope.$apply();
-  }));
-  hl.on('remove-adjacent', angular.bind(this, function (voxelPos) {
-    this.blockPosPlace = null;
     this.scope.$apply();
   }));
 };
@@ -238,20 +264,6 @@ BaseController.prototype.setupKeys = function() {
   }));
 };
 
-BaseController.prototype.onEnterKey = function(ev) {
-};
-
-BaseController.prototype.makeWalk = function() {
-  this.game.on('tick', angular.bind(this, function() {
-    var target = this.game.controls.target();
-    walk.render(target.playerSkin);
-    var vx = Math.abs(target.velocity.x);
-    var vz = Math.abs(target.velocity.z);
-    if (vx > 0.001 || vz > 0.001) walk.stopWalking();
-    else walk.startWalking();
-  }));
-};
-
 BaseController.prototype.setupCover = function() {
   this.game.interact.on('attain', angular.bind(this, function() {
     this.hideCover = true;
@@ -262,5 +274,27 @@ BaseController.prototype.setupCover = function() {
     this.scope.$apply();
   }));
 };
+
+BaseController.prototype.setupFire = function() {  
+  this.game.on('fire', angular.bind(this, function (target, state) {
+    if (!this.blockPosErase) {
+      return;
+    }
+    if (state.fire) {
+      this.onFire(this.blockPosErase);
+    }
+    if (state.firealt) {
+      var vec = this.getNormalVector();
+      var position = [
+        this.blockPosErase[0] + vec[0],
+        this.blockPosErase[1] + vec[1],
+        this.blockPosErase[2] + vec[2]];
+      this.onFireAlt(position);
+    }
+  }));
+};
+
+BaseController.prototype.onFire = function() {};
+BaseController.prototype.onFireAlt = function() {};
 
 module.exports = BaseController;

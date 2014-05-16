@@ -78,23 +78,16 @@ GameController.prototype.loadMap = function() {
     }));
 };
 
-GameController.prototype.setup = function() {  
-  this.setupHighlight();
-  this.setupKeys();
-  this.setupCover();
-
-  this.game.on('fire', angular.bind(this, function (target, state) {
-    var position = this.blockPosPlace;
-    if (position) {
-      this.game.createBlock(position, this.currentMaterial + 1);
-    }
-    else {
-      position = this.blockPosErase;
-      if (position) this.game.setBlock(position, 0);
-    }
-  }));
+GameController.prototype.onFire = function(position) { 
+  this.game.setBlock(position, 0);
 };
 
+GameController.prototype.onFireAlt = function(position) { 
+  if (this.game.canCreateBlock(position)) {
+    this.game.createBlock(position, this.currentMaterial + 1);
+  }
+};
+ 
 GameController.prototype.setupAutoSave = function() {  
   this.game.on('setBlock', angular.bind(this, function (pos, val, old) {
     this.dirty = true;

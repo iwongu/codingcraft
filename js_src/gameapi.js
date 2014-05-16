@@ -21,7 +21,9 @@ GameApi.prototype.removeBlock = function(x, y, z) {
 };
 
 GameApi.prototype.setBlock_ = function(x, y, z, block) {
-  this.game.setBlock([x, y, z], block);
+  if (this.game.canCreateBlock([x, y, z])) {
+    this.game.setBlock([x, y, z], block);
+  }
 };
 
 GameApi.prototype.getBlock = function(x, y, z) {
@@ -34,10 +36,8 @@ GameApi.prototype.getCurrentBlock = function() {
 };
 
 GameApi.prototype.getNormalVector = function() {
-  var cp = this.game.cameraPosition();
-  var cv = this.game.cameraVector();
-  var hit = this.game.raycastVoxels(cp, cv, 10);
-  return {x: hit.normal[0], y: hit.normal[1], z: hit.normal[2]};
+  var vec = this.gameController.getNormalVector();
+  return {x: vec[0], y: vec[1], z: vec[2]};
 };
 
 GameApi.prototype.move = function(x, y, z) {

@@ -108,35 +108,22 @@ MultiplayController.prototype.loadMap = function() {
     }));
 };
 
-MultiplayController.prototype.setup = function() {  
-  this.setupHighlight();
-  this.setupKeys();
-  this.setupCover();
+MultiplayController.prototype.onFire = function(position) { 
+  var blocks = [];
+  blocks.push({position: position, material: 0});
+  var message = {
+    blocks: blocks,
+  };
+  this.sendMessage(message);
+};
 
-  this.game.on('fire', angular.bind(this, function (target, state) {
-    if (this.freezed) {
-      return;
-    }
-
-    var blocks = [];
-    var position = this.blockPosPlace;
-    if (position) {
-      blocks.push({position: position, material: this.currentMaterial + 1});
-    }
-    else {
-      position = this.blockPosErase;
-      if (position) blocks.push({position: position, material: 0});
-    }
-
-    if (blocks.length == 0) {
-      return;
-    }
-
-    var message = {
-      blocks: blocks,
-    };
-    this.sendMessage(message);
-  }));
+MultiplayController.prototype.onFireAlt = function(position) { 
+  var blocks = [];
+  blocks.push({position: position, material: this.currentMaterial + 1});
+  var message = {
+    blocks: blocks,
+  };
+  this.sendMessage(message);
 };
 
 MultiplayController.prototype.sendMessage = function(message) {  
