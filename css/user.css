@@ -1,0 +1,26 @@
+body {
+    overflow: auto;
+}
+
+.section {
+    margin-bottom: 50px;
+}
+.section-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.user-settings {
+    margin: 100px auto 0;
+    display: table;
+}
+.user-settings th {
+    text-align: left;
+}
+.user-settings th,
+.user-settings td {
+    padding-right: 20px;
+}
+
+.field {
+    margin-bottom: 20px;
+}

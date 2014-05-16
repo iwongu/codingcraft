@@ -85,20 +85,16 @@ class SaveMap(webapp2.RequestHandler):
         self.response.write(json.dumps(response))
 
 
-class LoadMap(webapp2.RequestHandler):
+class GetMaps(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
-        result = data.Map.query(data.Map.owner == user).fetch()
-        if len(result) == 0:
-            response = {'result': 'not_found' }
-            self.response.write(json.dumps(response))
-            return
-
-        blocks = result[0]
+        maps = data.Map.query(data.Map.owner == user).fetch()
+        maps = maps if maps is not None else []
+        maps = [m.serialize() for m in maps]
         response = {
             'result': 'ok',
-            'key': blocks.key.id(),
-            'data': blocks.data }
+            'maps': maps
+            }
         self.response.write(json.dumps(response));
 
 
@@ -134,7 +130,7 @@ application = webapp2.WSGIApplication([
         ('/_/set_user/', SetUser),
         ('/_/save_codes/', SaveCodes),
         ('/_/save_map/', SaveMap),
-        ('/_/load_map/', LoadMap),
+        ('/_/get_maps/', GetMaps),
         ('/_/load_map_by_id/', LoadMapById),
         ('/_/send_message/', SendMessage),
     ], debug=True)

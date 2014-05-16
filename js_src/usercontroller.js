@@ -9,12 +9,22 @@ var UserController = function($scope, $http, $window, topbar) {
 
   this.name = null;
   this.avatar = null;
+  this.maps = [];
 
   this.http.post('/_/get_user/').
     success(angular.bind(this, function(data) {
       if (data.result == 'ok') {
         this.name = data.name;
         this.avatar = data.avatar;
+      }
+    })).
+    error(angular.bind(this, function() {
+    }));
+
+  this.http.post('/_/get_maps/').
+    success(angular.bind(this, function(data) {
+      if (data.result == 'ok') {
+        this.maps = data.maps;
       }
     })).
     error(angular.bind(this, function() {

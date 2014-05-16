@@ -8,6 +8,8 @@ var inherits = require('inherits')
 var GameController = function($scope, $http, $window, $timeout, topbar) {
   BaseController.call(this, $scope, $http, $window, $timeout, topbar);
 
+  this.initdata = $window.MC_initdata;
+
   this.currentCode = 0;
   this.autoSavePromise = null;
   this.dirty = false;
@@ -63,7 +65,8 @@ GameController.prototype.resetMap = function() {
 };
 
 GameController.prototype.loadMap = function() {
-  return this.http.post('/_/load_map/').
+  var params = $.param({'key': this.initdata.key});
+  return this.http.post('/_/load_map_by_id/', params).
     success(angular.bind(this, function(data) {
       if (data.result != 'ok') {
         return;

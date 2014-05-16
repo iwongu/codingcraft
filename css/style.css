@@ -174,12 +174,3 @@ ul {
     display: inline-block;
     margin-right: 5px;
 }
-
-.user-settings {
-    margin: 100px auto 0;
-    display: table;
-}
-
-.field {
-    margin-bottom: 20px;
-}

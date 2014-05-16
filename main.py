@@ -24,7 +24,7 @@ def isUserSetup(user):
     return result[0].name != None and result[0].avatar != None
 
 
-class MainPage(webapp2.RequestHandler):
+class PlayPage(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
         if not isUserSetup(user):
@@ -32,8 +32,10 @@ class MainPage(webapp2.RequestHandler):
             return
 
         template_values = {
-            'username': user.nickname(), }
-        template = JINJA_ENVIRONMENT.get_template('index.html')
+            'username': user.nickname(),
+            'key': self.request.get('key')
+            }
+        template = JINJA_ENVIRONMENT.get_template('play.html')
         self.response.write(template.render(template_values))
 
 
@@ -91,7 +93,7 @@ class MultiplayPage(webapp2.RequestHandler):
 
 
 application = webapp2.WSGIApplication([
-    ('/', MainPage),
-    ('/user', UserPage),
+    ('/', UserPage),
+    ('/play', PlayPage),
     ('/start', MultiplayPage),
 ], debug=True)

@@ -7,31 +7,52 @@
     <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="css/normalize.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/user.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
   </head>
   <body ng-controller="UserController as user">
     <div class="user-settings">
-      <div class="title">Codingcraft User</div>
-      <form name="settings">
-        <div class="field">
-          <span class="name">Name: </span>
-          <span class="value"><input type="text" ng-model="user.name" required></span>
-        </div>
-        <div class="field">
-          <span class="name">Avatar: </span>
-          <span class="value">
-            <select ng-model="user.avatar" required>
-              {% for key, value in avatars.iteritems() %}
-              <option value="{{key}}">{{value}}</option>
-              {% endfor %}
-            </select>
+      <div class="title">Codingcraft</div>
+      <div class="section">
+        <div class="section-title">User</div>
+        <form name="settings">
+          <div class="field">
+            <span class="name">Name: </span>
+            <span class="value"><input type="text" ng-model="user.name" required></span>
+          </div>
+          <div class="field">
+            <span class="name">Avatar: </span>
+            <span class="value">
+              <select ng-model="user.avatar" required>
+                {% for key, value in avatars.iteritems() %}
+                <option value="{{key}}">{{value}}</option>
+                {% endfor %}
+              </select>
+            </span>
+          </div>
+          <span class="button-container">
+            <button ng-disabled="!settings.$valid || !settings.$dirty" class="button primary" ng-click="user.save()">Save</button>
           </span>
-        </div>
-        <span class="button-container">
-          <button ng-disabled="!settings.$valid || !settings.$dirty" class="button primary" ng-click="user.save()">Save</button>
-        </span>
-      </form>
+        </form>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Maps</div>
+        {% raw %}
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Created</th>
+            <th>Updated</th>
+          </tr>
+          <tr ng-repeat="m in user.maps">
+            <td>{{m.name}} <a ng-href="/play?key={{m.key}}">single</a> <a ng-href="/start?key={{m.key}}">multi</a</td>
+            <td>{{m.created}}</td>
+            <td>{{m.updated}}</td>
+          </tr>
+          {% endraw %}
+      </div>
     </div>
     <aside class="topbar hide" id="topbar"></aside>
     <script src="js/user_bundle.js"></script>
