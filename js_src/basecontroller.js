@@ -70,7 +70,15 @@ var BaseController = function(scope, http, window, timeout, topbar) {
     container: containerEl,
     materials: this.materials,
     worldOrigin: [0, 0, 0],
-    controls: { discreteFire: true }
+    playerHeight: 2.0,
+    controls: {
+      discreteFire: true,
+      speed: 0.0032,
+      maxSpeed: 0.0112,
+      jumpMaxSpeed: 0.01,
+      jumpMaxTimer: 100,
+      jumpSpeed: 0.004
+    }
   };
 
   this.game = createGame(opts);
@@ -82,7 +90,7 @@ var BaseController = function(scope, http, window, timeout, topbar) {
   // create the player from a minecraft skin file and tell the
   // game to use it as the main player
   this.skinOpts = {
-    scale: new this.game.THREE.Vector3(0.04, 0.04, 0.04)
+    scale: new this.game.THREE.Vector3(0.05, 0.06, 0.05)
   };
 
   this.avatar = null;
@@ -297,12 +305,11 @@ BaseController.prototype.setupHighlight = function() {
 
 BaseController.prototype.setupKeys = function() {
   window.addEventListener('keydown', angular.bind(this, function (ev) {
-    /*
     if (ev.keyCode === 'R'.charCodeAt(0)) {
       // toggle between first and third person modes
       this.avatar.toggle();
     }
-    */
+
     if (ev.target.tagName == 'TEXTAREA' || ev.target.tagName == 'INPUT') {
       return;
     }
