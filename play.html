@@ -30,6 +30,13 @@
     <div class="help-container" ng-hide="game.hideCover">
       {% include "help.html" %}
     </div>
+    <div class="status-container" ng-hide="!game.hideCover">
+      {% raw %}
+      <div ng-repeat="(name, value) in game.status">
+        {{name}}: {{value}}
+      </div>
+      {% endraw %}
+    </div>
     <div class="menu-container" ng-hide="game.hideCover">
       <div class="user-container">
         {{username}}

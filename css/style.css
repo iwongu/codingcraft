@@ -37,7 +37,7 @@ body {
     top: 0;
     bottom: 0;
     left: 0;
-    right: 400px;
+    right: 0;
 }
 .help {
     display: table;
@@ -67,8 +67,7 @@ ul {
     bottom: 0;
     width: 360px;
     right: 0;
-    margin: 10px 20px 0;
-    border-radius: 3px 3px 0 0;
+    margin: 0 20px;
     opacity: 1;
 }
 .menu-container.ng-hide,
@@ -77,6 +76,20 @@ ul {
     opacity: 0;
     -webkit-transition: opacity .5s ease-out;
     display: block !important;
+}
+
+.status-container {
+    pointer-events: none;
+    background-color: transparent;
+    color: white;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 360px;
+    right: 0;
+    margin: 0 20px;
+    opacity: 1;
+    text-align: right;
 }
 
 .crosshair {

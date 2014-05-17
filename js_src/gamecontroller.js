@@ -10,7 +10,7 @@ var GameController = function($scope, $http, $window, $timeout, topbar) {
 
   this.currentCode = 0;
   this.autoSavePromise = null;
-  this.dirty = false;
+  this.status.dirty = false;
 
   this.loadUser();
   this.loadMap().
@@ -63,24 +63,25 @@ GameController.prototype.onFireAlt = function(position) {
  
 GameController.prototype.setupAutoSave = function() {  
   this.game.on('setBlock', angular.bind(this, function (pos, val, old) {
-    this.dirty = true;
+    this.status.dirty = true;
     if (this.autoSavePromise) {
       this.timeout.cancel(this.autoSavePromise);
     }
     this.autoSavePromise = this.timeout(angular.bind(this, function() {
       this.autoSaveMap();
+      this.scope.$apply();
     }), 10 *1000);
   }));
 
   this.window.onbeforeunload = angular.bind(this, function(event) {
-    if (this.dirty) {
+    if (this.status.dirty) {
       this.saveMap();
       return 'You have unsaved changes. It will be auto-saved in a few seconds. Are you sure you want to leave this page now?';
     }
   });
 
   this.window.onunload = angular.bind(this, function(event) {
-    if (this.dirty) {
+    if (this.status.dirty) {
       this.saveMap();
     }
   });
@@ -89,7 +90,7 @@ GameController.prototype.setupAutoSave = function() {
 
 GameController.prototype.autoSaveMap = function() {
   this.topbar.show_message("Auto saving...");
-  this.dirty = false;
+  this.status.dirty = false;
   this.saveMap().
     success(angular.bind(this, function(data) {
       this.topbar.hide_message();

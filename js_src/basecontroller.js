@@ -25,7 +25,7 @@ var BaseController = function(scope, http, window, timeout, topbar) {
 
   var containerEl = window.document.getElementById('container');
 
-  this.gameSize = {x:50, y:30, z:50};
+  this.gameSize = {x:40, y:30, z:40};
   this.materials = [
     ['grass', 'dirt', 'grass_dirt'],
     'brick',
@@ -61,7 +61,7 @@ var BaseController = function(scope, http, window, timeout, topbar) {
   var opts = {
     generate: angular.bind(this, function(i,j,k) {
       if (j > 0) { return 0; }
-      if ((i*i + j*j + k*k) < this.gameSize.x*this.gameSize.z) {
+      if ((i*i + j*j + k*k) < this.gameSize.x*this.gameSize.x) {
         return j == 0 ? 1 : 3;
       }
       return 0;
@@ -91,6 +91,8 @@ var BaseController = function(scope, http, window, timeout, topbar) {
 
   this.currentMaterial = 0;
   this.hideCover = false;
+
+  this.status = {};
 
   this.blockPosErase = null;
 
@@ -143,6 +145,8 @@ BaseController.prototype.loadUser = function() {
       }
 
       this.setPlayer();
+
+      this.status.username = this.name;
     })).
     error(angular.bind(this, function() {
     }));
@@ -281,10 +285,12 @@ BaseController.prototype.setupHighlight = function() {
   });
   hl.on('highlight', angular.bind(this, function (hl, voxelPos) {
     this.blockPosErase = voxelPos;
+    this.status.targetblock = this.blockPosErase;
     this.scope.$apply();
   }, hl));
   hl.on('remove', angular.bind(this, function (voxelPos) {
     this.blockPosErase = null;
+    this.status.targetblock = this.blockPosErase;
     this.scope.$apply();
   }));
 };
