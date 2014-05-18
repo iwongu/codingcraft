@@ -327,18 +327,46 @@ BaseController.prototype.setupHighlight = function() {
   }));
 };
 
+BaseController.prototype.toggleFlying = function() {
+  if (this.game.flyer.flying) {
+    this.game.flyer.stopFlying();
+  } else {
+    this.game.flyer.startFlying();
+    this.avatar.position.y += 1.0;
+  }
+  this.status.flying = this.game.flyer.flying;
+};
+
 BaseController.prototype.setupKeys = function() {
-  var spaceCount = 0;
   var spaceTime = Date.now();
 
+  window.addEventListener('keyup', angular.bind(this, function (ev) {
+    if (ev.target.tagName == 'TEXTAREA' || ev.target.tagName == 'INPUT') {
+      return;
+    }
+
+    if (ev.keyCode == 32) { // Space key
+      var now = Date.now();
+      var diff = now - spaceTime;
+      if (diff >= 300) {
+        spaceTime = now;
+      } else {
+        this.toggleFlying();
+      }
+    }
+  }));
   window.addEventListener('keydown', angular.bind(this, function (ev) {
+    if (ev.target.tagName == 'TEXTAREA' || ev.target.tagName == 'INPUT') {
+      return;
+    }
+
     if (ev.keyCode === 'R'.charCodeAt(0)) {
       // toggle between first and third person modes
       this.avatar.toggle();
     }
 
-    if (ev.target.tagName == 'TEXTAREA' || ev.target.tagName == 'INPUT') {
-      return;
+    if (ev.keyCode === 'F'.charCodeAt(0)) {
+      this.toggleFlying();
     }
 
     var codeOffset = '1'.charCodeAt(0);
@@ -360,15 +388,6 @@ BaseController.prototype.setupKeys = function() {
     }
     if (ev.keyCode == 13) { // Enter key
       this.onEnterKey(ev);
-    }
-    if (ev.keyCode === 'F'.charCodeAt(0)) {
-      if (this.game.flyer.flying) {
-        this.game.flyer.stopFlying();
-      } else {
-        this.game.flyer.startFlying();
-        this.avatar.position.y += 0.2;
-      }
-      this.status.flying = this.game.flyer.flying;
     }
     this.scope.$apply();
   }));
