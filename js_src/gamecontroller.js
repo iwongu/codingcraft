@@ -63,16 +63,8 @@ GameController.prototype.onFireAlt = function(position) {
  
 GameController.prototype.setupAutoSave = function() {  
   this.game.on('setBlock', angular.bind(this, function (pos, val, old) {
-    this.status.dirty = true;
-    if (this.autoSavePromise) {
-      this.timeout.cancel(this.autoSavePromise);
-    }
-    this.autoSavePromise = this.timeout(angular.bind(this, function() {
-      this.autoSaveMap();
-      this.scope.$apply();
-    }), 10 *1000);
+    this.startAutoSave();
   }));
-
   this.window.onbeforeunload = angular.bind(this, function(event) {
     if (this.status.dirty) {
       this.saveMap();
@@ -87,6 +79,16 @@ GameController.prototype.setupAutoSave = function() {
   });
 };
 
+GameController.prototype.startAutoSave = function() {
+  this.status.dirty = true;
+  if (this.autoSavePromise) {
+    this.timeout.cancel(this.autoSavePromise);
+  }
+  this.autoSavePromise = this.timeout(angular.bind(this, function() {
+    this.autoSaveMap();
+    this.scope.$apply();
+  }), 10 *1000);
+};
 
 GameController.prototype.autoSaveMap = function() {
   this.topbar.show_message("Auto saving...");

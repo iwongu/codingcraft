@@ -230,7 +230,6 @@ BaseController.prototype.resetMap = function() {
 
 BaseController.prototype.drawMap = function(data) {
   if (!data) {
-    this.status.dirty = true;
     return; // new map.
   }
   var cbdata = {
@@ -354,6 +353,8 @@ BaseController.prototype.setupKeys = function() {
         this.toggleFlying();
       }
     }
+
+    this.scope.$apply();
   }));
   window.addEventListener('keydown', angular.bind(this, function (ev) {
     if (ev.target.tagName == 'TEXTAREA' || ev.target.tagName == 'INPUT') {
