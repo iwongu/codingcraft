@@ -70,7 +70,7 @@ var BaseController = function(scope, http, window, timeout, topbar) {
     container: containerEl,
     materials: this.materials,
     worldOrigin: [0, 0, 0],
-    playerHeight: 2.0,
+    playerHeight: 1.62,
     controls: {
       discreteFire: true,
       speed: 0.0032,
@@ -90,7 +90,7 @@ var BaseController = function(scope, http, window, timeout, topbar) {
   // create the player from a minecraft skin file and tell the
   // game to use it as the main player
   this.skinOpts = {
-    scale: new this.game.THREE.Vector3(0.05, 0.06, 0.05)
+    scale: new this.game.THREE.Vector3(0.04, 0.04, 0.04)
   };
 
   this.avatar = null;
@@ -101,6 +101,7 @@ var BaseController = function(scope, http, window, timeout, topbar) {
   this.hideCover = false;
 
   this.status = {};
+  this.status.flying = false;
 
   this.blockPosErase = null;
 
@@ -252,7 +253,7 @@ BaseController.prototype.drawMap = function(data) {
 BaseController.prototype.makeFly = function() {
   var makeFly = fly(this.game);
   var target = this.game.controls.target();
-  this.game.flyer = makeFly(target);
+  this.game.flyer = makeFly(target, true);
 }; 
 
 BaseController.prototype.getNormalVector = function() {
@@ -281,6 +282,10 @@ BaseController.prototype.setup = function() {
   this.setupKeys();
   this.setupCover();
   this.setupFire();
+
+  this.game.on('missingChunk', angular.bind(this, function (chunkPosition) {
+    debugger;
+  }));
 };
 
 BaseController.prototype.setupHighlight = function() {
@@ -304,6 +309,9 @@ BaseController.prototype.setupHighlight = function() {
 };
 
 BaseController.prototype.setupKeys = function() {
+  var spaceCount = 0;
+  var spaceTime = Date.now();
+
   window.addEventListener('keydown', angular.bind(this, function (ev) {
     if (ev.keyCode === 'R'.charCodeAt(0)) {
       // toggle between first and third person modes
@@ -333,6 +341,15 @@ BaseController.prototype.setupKeys = function() {
     }
     if (ev.keyCode == 13) { // Enter key
       this.onEnterKey(ev);
+    }
+    if (ev.keyCode === 'F'.charCodeAt(0)) {
+      if (this.game.flyer.flying) {
+        this.game.flyer.stopFlying();
+      } else {
+        this.game.flyer.startFlying();
+        this.avatar.position.y += 0.2;
+      }
+      this.status.flying = this.game.flyer.flying;
     }
     this.scope.$apply();
   }));
