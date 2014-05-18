@@ -39,7 +39,9 @@
     </div>
     <div class="menu-container" ng-hide="game.hideCover">
       <div class="user-container">
-        {{username}}
+        {% raw %}
+        <a href="/">{{game.name}}</a>
+        {% endraw %}
       </div>
       <div class="menu">
         {% raw %}

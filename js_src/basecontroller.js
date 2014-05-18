@@ -25,7 +25,7 @@ var BaseController = function(scope, http, window, timeout, topbar) {
 
   var containerEl = window.document.getElementById('container');
 
-  this.gameSize = {x:40, y:30, z:40};
+  this.gameSize = {x:30, y:30, z:30};
   this.materials = [
     ['grass', 'dirt', 'grass_dirt'],
     'brick',
@@ -61,7 +61,7 @@ var BaseController = function(scope, http, window, timeout, topbar) {
   var opts = {
     generate: angular.bind(this, function(i,j,k) {
       if (j > 0) { return 0; }
-      if ((i*i + j*j + k*k) < this.gameSize.x*this.gameSize.x) {
+      if ((i*i + j*j + k*k) < this.gameSize.x*this.gameSize.x*0.9) {
         return j == 0 ? 1 : 3;
       }
       return 0;
@@ -229,6 +229,10 @@ BaseController.prototype.resetMap = function() {
 };
 
 BaseController.prototype.drawMap = function(data) {
+  if (!data) {
+    this.status.dirty = true;
+    return; // new map.
+  }
   var cbdata = {
     index: 0,
     cnt: 0,
@@ -274,6 +278,21 @@ BaseController.prototype.makeWalk = function() {
     var vz = Math.abs(target.velocity.z);
     if (vx > 0.001 || vz > 0.001) walk.stopWalking();
     else walk.startWalking();
+  }));
+
+  this.game.on('tick', angular.bind(this, function() {
+    if (Math.abs(this.avatar.position.x) > this.gameSize.x) {
+      this.avatar.position.x =
+        this.avatar.position.x > 0 ? this.gameSize.x : -this.gameSize.x;
+    }
+    if (Math.abs(this.avatar.position.y) > this.gameSize.y) {
+      this.avatar.position.y =
+        this.avatar.position.y > 0 ? this.gameSize.y : -this.gameSize.y;
+    }
+    if (Math.abs(this.avatar.position.z) > this.gameSize.z) {
+      this.avatar.position.z =
+        this.avatar.position.z > 0 ? this.gameSize.z : -this.gameSize.z;
+    }
   }));
 };
 
