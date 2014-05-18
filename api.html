@@ -6,15 +6,18 @@
   <li>cc.getBlock(1, 1, 1);</li>
   <li>cc.getCurrentBlock();</li>
   <li>cc.getTargetPosition();</li>
+  <li>cc.getNormalVector();</li>
   <li>cc.move(1, 0, 0);</li>
   <li>cc.moveTo(0, 20, 0);</li>
 </ul>
 <div>Examples.</div>
 <pre>// Pole.
 var pos = cc.getTargetPosition();
+var blk = cc.getCurrentBlock();
+var vec = cc.getNormalVector();
 if (pos) {
-  for (var i = 0; i < 10; i++) {
-    cc.setBlock(pos.x, pos.y+i, pos.z, BLOCK.diamond);
+  for (var i = 0; i < 5; i++) {
+    cc.setBlock(pos.x + vec.x*i, pos.y + vec.y*i, pos.z + vec.z*i, blk);
   }
 }</pre>
 <pre>// Big ball.
